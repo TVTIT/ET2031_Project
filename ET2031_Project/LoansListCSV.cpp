@@ -193,12 +193,18 @@ void LoansListCSV::CalculateInterestAllRow()
 {
 	for (int i = 0; i < loansCount; i++)
 	{
-		int monthDifference = LoansListCSV::CalculateMonthDifference(vLastCalDate[i], LoansListCSV::GetCurrentDate());
-		if (monthDifference < 1) continue;
+		int monthDifferenceLastCal = LoansListCSV::CalculateMonthDifference(vLastCalDate[i], LoansListCSV::GetCurrentDate());
+		int monthDifferenceDateAdded = LoansListCSV::CalculateMonthDifference(vDate[i], LoansListCSV::GetCurrentDate());
+		if (monthDifferenceDateAdded >= vLoanTerm[i])
+		{
+			//int monthDiffDateAddedLastCal = LoansListCSV::CalculateMonthDifference(vDate[i], vLastCalDate[i]);
+			monthDifferenceLastCal = vLoanTerm[i] - LoansListCSV::CalculateMonthDifference(vDate[i], vLastCalDate[i]);
+		}
+		if (monthDifferenceLastCal < 1) continue;
 
 		boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i] / 1200);
 		boost::multiprecision::cpp_dec_float_50 currentMoney(vTotalOutstandingBalance[i]);
-		boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * pow((1 + rate), monthDifference);
+		boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * pow((1 + rate), monthDifferenceLastCal);
 
 		long long ll_futureMoney = futureMoney.convert_to<long long>();
 		vTotalAccuredInterest[i] += ll_futureMoney - vTotalOutstandingBalance[i];
@@ -491,13 +497,64 @@ void LoansListCSV::FindLoanByID()
 	LoansListCSV::Interface();
 }
 
+void LoansListCSV::ShowLoansExpired()
+{
+	Main::ClearScreen();
+	fmt::println("Đang tìm kiếm các khoản vay hết hạn...\n");
+	
+	string currDate = LoansListCSV::GetCurrentDate();
+	vector<int> indexExpried = vector<int>();
+	for (int i = 0; i < loansCount; i++)
+	{
+		int monthDifference = LoansListCSV::CalculateMonthDifference(vDate[i], currDate);
+		if (monthDifference >= vLoanTerm[i])
+		{
+			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
+			fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[i]);
+			fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[i]));
+			fmt::println("Ngày vay: {0}", vDate[i]);
+			fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[i]);
+			fmt::println("Lãi suất: {0}%", vInterestRate[i]);
+			fmt::println("Tổng lãi phát sinh: {0} đồng", PreviewMoney(vTotalAccuredInterest[i]));
+			fmt::println("Tổng tiền đã trả: {0} đồng", PreviewMoney(vTotalAmountPaid[i]));
+			fmt::println("Tổng tiền dư nợ còn lại: {0} đồng\n", PreviewMoney(vTotalOutstandingBalance[i]));
+			indexExpried.push_back(i);
+		}
+	}
+	if (indexExpried.size() == 0)
+	{
+		fmt::println("Không tìm thấy khoản vay nào hết hạn");
+		Main::PauseAndBack();
+		LoansListCSV::Interface();
+		return;
+	}
+
+	fmt::println("Bạn có muốn xoá toàn bộ các khoản vay đã hết hạn không");
+	fmt::print("Nhấn Y để xoá, N để huỷ: ");
+	string userInput = Main::UnicodeInput();
+
+	if (userInput == "y" || userInput == "Y")
+	{
+		fmt::println("\nĐang xoá các khoản vay trên...");
+		for (int i = 0; i < indexExpried.size(); i++)
+		{
+			CSVFile.RemoveRow(indexExpried[i]);
+		}
+		fmt::println("Đã xoá thành công");
+	}
+
+	Main::PauseAndBack();
+	LoansListCSV::Interface();
+}
+
 void LoansListCSV::Interface()
 {
 	Main::ClearScreen();
 	fmt::println("[1] Thêm khoản vay");
 	fmt::println("[2] Tìm kiếm khoản vay theo số CCCD/CMMD của khách hàng");
 	fmt::println("[3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó");
-	fmt::println("[4] Quay lại màn hình chính");
+	fmt::println("[4] Liệt kê các khoản vay hết hạn");
+	fmt::println("[5] Quay lại màn hình chính");
 
 	fmt::print("Nhập lựa chọn của bạn: ");
 
@@ -517,6 +574,10 @@ void LoansListCSV::Interface()
 		LoansListCSV::FindLoanByID();
 	}
 	else if (userInput == "4")
+	{
+		LoansListCSV::ShowLoansExpired();
+	}
+	else if (userInput == "5")
 	{
 		Main::Interface();
 	}
