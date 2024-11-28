@@ -35,6 +35,7 @@ private:
 	static int CalculateMonthDifference(string date1, string date2);
 
 	static string PreviewMoney(long long input);
+	static string InputMoney();
 
 	static void EditLoan(int index);
 	static void RemoveLoan(int index);

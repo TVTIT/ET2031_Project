@@ -9,7 +9,6 @@ class CustomersListCSV
 public:
 	static void Load();
 	static void Interface();
-	//static int GetCustomerID(string CCCD);
 	static bool IsIDNumberAvailable(string CCCD);
 	static bool IsIDNumberAvailable(string CCCD, string& customerName);
 	static bool IsIDNumberAvailable(string CCCD, string& customerName, int& index);

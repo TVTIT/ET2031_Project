@@ -34,7 +34,7 @@ string Main::UnicodeInput()
 
     //Convert wstring sang string
     int size_needed = WideCharToMultiByte(CP_UTF8, 0, w_userInput.c_str(), -1, nullptr, 0, nullptr, nullptr);
-    string s_userInput(size_needed - 1, 0);  // Trừ đi 1 để bỏ ký tự null-terminator
+    string s_userInput(size_needed - 1, 0);  // Trừ đi 1 để bỏ ký tự \0
     WideCharToMultiByte(CP_UTF8, 0, w_userInput.c_str(), -1, &s_userInput[0], size_needed, nullptr, nullptr);
     return s_userInput;
 }

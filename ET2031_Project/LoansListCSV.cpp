@@ -178,6 +178,17 @@ string LoansListCSV::PreviewMoney(long long input)
 	return output;
 }
 
+string LoansListCSV::InputMoney()
+{
+	string userInput = Main::UnicodeInput();
+	for (int i = 0; i < userInput.size(); i++)
+	{
+		if (userInput[i] == '.')
+			userInput.erase(i, 1);
+	}
+	return userInput;
+}
+
 void LoansListCSV::CalculateInterestAllRow()
 {
 	for (int i = 0; i < loansCount; i++)
@@ -243,7 +254,7 @@ void LoansListCSV::EditLoan(int index)
 		try
 		{
 			fmt::print("Nhập số tiền muốn thêm: ");
-			vTotalAmountPaid[index] += stoll(Main::UnicodeInput());
+			vTotalAmountPaid[index] += stoll(LoansListCSV::InputMoney());
 			vTotalOutstandingBalance[index] = vLoanAmount[index] + vTotalAccuredInterest[index] - vTotalAmountPaid[index];
 			vLastCalDate[index] = LoansListCSV::GetCurrentDate();
 			fmt::println("Thêm số tiền đã trả thành công");
@@ -320,7 +331,7 @@ void LoansListCSV::AddLoan()
 
 	try
 	{
-		vLoanAmount.push_back(stoll(Main::UnicodeInput()));
+		vLoanAmount.push_back(stoll(LoansListCSV::InputMoney()));
 	}
 	catch (const std::exception&)
 	{
