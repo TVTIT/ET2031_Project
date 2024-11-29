@@ -5,6 +5,7 @@
 #include "rapidcsv.h"
 #include "CustomersListCSV.h"
 #include "Main.h"
+#include "LoansListCSV.h"
 
 using namespace std;
 
@@ -170,11 +171,13 @@ void CustomersListCSV::RemoveCustomer()
     }
     
     fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", customerName, CCCD);
+    fmt::println("Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
     fmt::print("Nhấn Y để xoá, N để huỷ: ");
     string userInput = Main::UnicodeInput();
     
     if (userInput == "y" || userInput == "Y")
     {
+        LoansListCSV::RemoveCustomerLoan(CCCD);
         CSVFile.RemoveRow(index);
         CSVFile.Save();
         CustomersListCSV::Load();

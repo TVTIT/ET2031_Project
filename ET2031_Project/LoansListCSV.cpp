@@ -215,6 +215,24 @@ void LoansListCSV::CalculateInterestAllRow()
 	LoansListCSV::Save();
 }
 
+void LoansListCSV::RemoveCustomerLoan(string CCCD)
+{
+	bool loanAvail = false;
+	for (int i = 0; i < loansCount; i++)
+	{
+		if (vCustomerIDs[i] == CCCD)
+		{
+			CSVFile.RemoveRow(i);
+			loanAvail = true;
+		}
+	}
+	if (loanAvail)
+	{
+		CSVFile.Save();
+		LoansListCSV::Load();
+	}
+}
+
 void LoansListCSV::EditLoan(int index)
 {
 	Main::ClearScreen();
