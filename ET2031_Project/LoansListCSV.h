@@ -10,6 +10,8 @@ public:
 	static void Interface();
 	static void CalculateInterestAllRow();
 	static void RemoveCustomerLoan(string CCCD);
+	static void AddLoan(string CCCD);
+	static void FindLoanByCCCD(string CCCD);
 
 private:
 	static rapidcsv::Document CSVFile;

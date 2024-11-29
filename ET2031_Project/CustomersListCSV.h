@@ -26,9 +26,12 @@ private:
 
 	static rapidcsv::Document CSVFile;
 
+	static void EditCustomerInfo(int index);
+
 	static void Save();
 	static void AddCustomer();
 	static void FindByIDNumber();
 	static void RemoveCustomer();
+	static void RemoveCustomer(int index);
 };
 

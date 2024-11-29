@@ -132,11 +132,15 @@ void CustomersListCSV::FindByIDNumber()
     Main::ClearScreen();
     fmt::print("Nhập số CCCD/CMND của khách hàng: ");
     string CCCD = Main::UnicodeInput();
+    bool isCustomerAvail = false;
+    int index = -1;
 
     for (int i = 0; i < customersCount; i++)
     {
-        if (CCCD == CustomersListCSV::vCustomerIDs[i])
+        if (CCCD == vCustomerIDs[i])
         {
+            isCustomerAvail = true;
+            index = i;
             fmt::println("Đã tìm thấy khách hàng!\n");
             fmt::println("Tên khách hàng: " + vNames[i]);
             fmt::println("Ngày sinh: " + vBirthdates[i]);
@@ -146,14 +150,117 @@ void CustomersListCSV::FindByIDNumber()
             fmt::println("Nhóm khách hàng: " + vCustomerGroups[i]);
             fmt::println("Ghi chú: {0}\n", vNotes[i]);
 
-            Main::PauseAndBack();
+            break;
+        }
+    }
+    
+    if (isCustomerAvail)
+    {
+        fmt::println("\nCác thao tác với khách hàng");
+        fmt::println("[1] Sửa thông tin khách hàng");
+        fmt::println("[2] Xoá khách hàng");
+        fmt::println("[3] Thêm khoản vay với khách hàng trên");
+        fmt::println("[4] Liệt kê các khoản vay của khách hàng trên");
+        fmt::println("[5] Quay lại màn hình khách hàng");
+
+        fmt::print("\nNhập lựa chọn của bạn: ");
+        string userInput = Main::UnicodeInput();
+        if (userInput == "1")
+        {
+            CustomersListCSV::EditCustomerInfo(index);
+        }
+        else if (userInput == "2")
+        {
+            CustomersListCSV::RemoveCustomer(index);
+        }
+        else if (userInput == "3")
+        {
+            LoansListCSV::AddLoan(CCCD);
+            return;
+        }
+        else if (userInput == "4")
+        {
+            Main::ClearScreen();
+            LoansListCSV::FindLoanByCCCD(CCCD);
+            return;
+        }
+        else if (userInput == "5")
+        {
             CustomersListCSV::Interface();
             return;
         }
     }
-    fmt::println("Không tìm thấy khách hàng!");
+    else
+    {
+        fmt::println("Không tìm thấy khách hàng!");
+    }
+
     Main::PauseAndBack();
     CustomersListCSV::Interface();
+}
+
+void CustomersListCSV::EditCustomerInfo(int index)
+{
+    Main::ClearScreen();
+    fmt::println("[1] Tên khách hàng: " + vNames[index]);
+    fmt::println("[2] Ngày sinh: " + vBirthdates[index]);
+    fmt::println("[3] SĐT: " + vPhoneNumbers[index]);
+    fmt::println("[4] Địa chỉ: " + vAddresses[index]);
+    fmt::println("[5] Số CCCD/CMND: " + vCustomerIDs[index]);
+    fmt::println("[6] Nhóm khách hàng: " + vCustomerGroups[index]);
+    fmt::println("[7] Ghi chú: {0}\n", vNotes[index]);
+    fmt::println("[8] Quay lại màn hình khách hàng");
+
+    fmt::print("\nNhập phần bạn muốn chỉnh sửa: ");
+    string userChoice = Main::UnicodeInput();
+
+    if (userChoice == "1")
+    {
+        fmt::print("Nhập tên khách hàng mới: ");
+        vNames[index] = Main::UnicodeInput();
+    }
+    else if (userChoice == "2")
+    {
+        fmt::print("Nhập ngày sinh mới: ");
+        vBirthdates[index] = Main::UnicodeInput();
+    }
+    else if (userChoice == "3")
+    {
+        fmt::print("Nhập SĐT mới: ");
+        vPhoneNumbers[index] = Main::UnicodeInput();
+    }
+    else if (userChoice == "4")
+    {
+        fmt::print("Nhập địa chỉ mới: ");
+        vAddresses[index] = Main::UnicodeInput();
+    }
+    else if (userChoice == "5")
+    {
+        fmt::print("Nhập số CMND/CCCD mới: ");
+        vCustomerIDs[index] = Main::UnicodeInput();
+    }
+    else if (userChoice == "6")
+    {
+        fmt::print("Nhập nhóm khách hàng mới: ");
+        vCustomerGroups[index] = Main::UnicodeInput();
+    }
+    else if (userChoice == "7")
+    {
+        fmt::print("Nhập ghi chú mới: ");
+        vNotes[index] = Main::UnicodeInput();
+    }
+    else if (userChoice == "8")
+    {
+        CustomersListCSV::Interface();
+        return;
+    }
+    else
+    {
+        fmt::println("Lựa chọn không hợp lệ");
+        Main::PauseAndBack();
+        CustomersListCSV::EditCustomerInfo(index);
+        return;
+    }
 }
 
 void CustomersListCSV::RemoveCustomer()
@@ -169,12 +276,12 @@ void CustomersListCSV::RemoveCustomer()
         Main::PauseAndBack();
         CustomersListCSV::Interface();
     }
-    
+
     fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", customerName, CCCD);
     fmt::println("Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
     fmt::print("Nhấn Y để xoá, N để huỷ: ");
     string userInput = Main::UnicodeInput();
-    
+
     if (userInput == "y" || userInput == "Y")
     {
         LoansListCSV::RemoveCustomerLoan(CCCD);
@@ -186,6 +293,23 @@ void CustomersListCSV::RemoveCustomer()
 
     Main::PauseAndBack();
     CustomersListCSV::Interface();
+}
+
+void CustomersListCSV::RemoveCustomer(int index)
+{
+    fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", vNames[index], vCustomerIDs[index]);
+    fmt::println("Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
+    fmt::print("Nhấn Y để xoá, N để huỷ: ");
+    string userInput = Main::UnicodeInput();
+
+    if (userInput == "y" || userInput == "Y")
+    {
+        LoansListCSV::RemoveCustomerLoan(vCustomerIDs[index]);
+        CSVFile.RemoveRow(index);
+        CSVFile.Save();
+        CustomersListCSV::Load();
+        fmt::println("Xoá khách hàng thành công");
+    }
 }
 
 void CustomersListCSV::Interface()

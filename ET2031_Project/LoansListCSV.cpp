@@ -340,6 +340,11 @@ void LoansListCSV::AddLoan()
 	fmt::print("Nhập số CCCD/CMND của khách hàng: ");
 	string CCCD = Main::UnicodeInput();
 
+	LoansListCSV::AddLoan(CCCD);
+}
+
+void LoansListCSV::AddLoan(string CCCD)
+{
 	if (CustomersListCSV::IsIDNumberAvailable(CCCD))
 	{
 		vCustomerIDs.push_back(CCCD);
@@ -378,7 +383,7 @@ void LoansListCSV::AddLoan()
 	}
 
 	fmt::print("Nhập thời hạn vay (tính theo tháng): ");
-	
+
 	try
 	{
 		vLoanTerm.push_back(stoi(Main::UnicodeInput()));
@@ -430,6 +435,11 @@ void LoansListCSV::FindLoanByCCCD()
 	Main::ClearScreen();
 	fmt::print("Nhập số CCCD/CMND của khách hàng: ");
 	string CCCD = Main::UnicodeInput();
+	LoansListCSV::FindLoanByCCCD(CCCD);
+}
+
+void LoansListCSV::FindLoanByCCCD(string CCCD)
+{
 	string customerName;
 	if (!CustomersListCSV::IsIDNumberAvailable(CCCD, customerName))
 	{
