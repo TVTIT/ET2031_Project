@@ -218,11 +218,13 @@ void LoansListCSV::CalculateInterestAllRow()
 void LoansListCSV::RemoveCustomerLoan(string CCCD)
 {
 	bool loanAvail = false;
+	int countDeleted = 0;
 	for (int i = 0; i < loansCount; i++)
 	{
 		if (vCustomerIDs[i] == CCCD)
 		{
-			CSVFile.RemoveRow(i);
+			CSVFile.RemoveRow(i - countDeleted);
+			countDeleted++; //Mỗi lần xoá thì mất 1 dòng trong file CSV -> lệch với index của vector
 			loanAvail = true;
 		}
 	}
@@ -564,10 +566,14 @@ void LoansListCSV::ShowLoansExpired()
 	if (userInput == "y" || userInput == "Y")
 	{
 		fmt::println("\nĐang xoá các khoản vay trên...");
+		int countDeleted = 0;
 		for (int i = 0; i < indexExpried.size(); i++)
 		{
-			CSVFile.RemoveRow(indexExpried[i]);
+			CSVFile.RemoveRow(indexExpried[i] - countDeleted);
+			countDeleted++;
 		}
+		CSVFile.Save();
+		LoansListCSV::Load();
 		fmt::println("Đã xoá thành công");
 	}
 
