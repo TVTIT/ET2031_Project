@@ -25,6 +25,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Download and Extract Boost libary 1.86.0
+      run: |
+        $boostUrl = "https://archives.boost.io/release/1.86.0/source/boost_1_86_0.zip"
+        $outputPath = "$env:GITHUB_WORKSPACE/boost_1_86_0.zip"
+        Invoke-WebRequest -Uri $boostUrl -OutFile $outputPath
+        & "C:\Program Files\7-Zip\7z.exe" x $outputPath -o"$env:GITHUB_WORKSPACE/" -y
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
@@ -33,7 +40,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}} /p:IncludePath="$env:GITHUB_WORKSPACE/boost_1_86_0"
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
