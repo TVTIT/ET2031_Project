@@ -12,6 +12,8 @@
 #include "Main.h"
 #include "CustomersListCSV.h"
 
+#define LOANS_LIST_FILE Main::DirectoryPath + "\\loans_list.csv"
+
 using namespace std;
 
 
@@ -29,7 +31,7 @@ vector<long long> LoansListCSV::vTotalOutstandingBalance;
 vector<string> LoansListCSV::vNotes;
 vector<string> LoansListCSV::vLastCalDate;
 
-int LoansListCSV::loansCount;
+int LoansListCSV::loansCount = 0;
 
 /// <summary>
 /// Tạo 1 ID ngẫu nhiên cho khoản vay với 6 ký tự bao gồm chữ viết hoa và số
@@ -65,7 +67,17 @@ bool LoansListCSV::IsLoanIDExist(string ID)
 
 void LoansListCSV::Load()
 {
-	CSVFile = rapidcsv::Document(Main::DirectoryPath + "\\loans_list.csv", rapidcsv::LabelParams(0, -1));
+	ifstream file;
+	file.open(LOANS_LIST_FILE);
+	if (!file)
+	{
+		LoansListCSV::CreateNewFile();
+		CSVFile = rapidcsv::Document(LOANS_LIST_FILE, rapidcsv::LabelParams(0, -1));
+		return;
+	}
+	file.close();
+
+	CSVFile = rapidcsv::Document(LOANS_LIST_FILE, rapidcsv::LabelParams(0, -1));
 
 	vLoanIDs = CSVFile.GetColumn<string>(0);
 	vCustomerIDs = CSVFile.GetColumn<string>(1);
@@ -82,7 +94,15 @@ void LoansListCSV::Load()
 	loansCount = vLoanIDs.size();
 }
 
+void LoansListCSV::CreateNewFile()
+{
+	rapidcsv::Document doc(string(), rapidcsv::LabelParams(-1, -1)); //không nhận cột, ô nào làm label
+	vector<string> v = { "Mã khoản vay","Số CCCD khách hàng","Số tiền vay","Ngày vay","Thời hạn vay","Lãi suất",
+		"Tổng lãi phát sinh","Tổng tiền đã trả","Tổng dư nợ còn lại","Ghi chú","Ngày tính lãi gần nhất" };
+	doc.InsertRow<string>(0, v);
 
+	doc.Save(LOANS_LIST_FILE);
+}
 
 void LoansListCSV::Save()
 {
@@ -191,6 +211,7 @@ string LoansListCSV::InputMoney()
 
 void LoansListCSV::CalculateInterestAllRow()
 {
+	if (loansCount < 1) return;
 	for (int i = 0; i < loansCount; i++)
 	{
 		int monthDifferenceLastCal = LoansListCSV::CalculateMonthDifference(vLastCalDate[i], LoansListCSV::GetCurrentDate());

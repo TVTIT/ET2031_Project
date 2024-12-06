@@ -7,6 +7,8 @@
 #include "Main.h"
 #include "LoansListCSV.h"
 
+#define CUSTOMERS_LIST_FILE Main::DirectoryPath + "\\customers_list.csv"
+
 using namespace std;
 
 rapidcsv::Document CustomersListCSV::CSVFile;
@@ -19,11 +21,21 @@ vector<string> CustomersListCSV::vCustomerIDs;
 vector<string> CustomersListCSV::vCustomerGroups;
 vector<string> CustomersListCSV::vNotes;
 
-int CustomersListCSV::customersCount;
+int CustomersListCSV::customersCount = 0;
 
 void CustomersListCSV::Load()
 {
-	CSVFile = rapidcsv::Document(Main::DirectoryPath + "\\customers_list.csv", rapidcsv::LabelParams(0, -1));
+    ifstream file;
+    file.open(CUSTOMERS_LIST_FILE);
+    if (!file)
+    {
+        CustomersListCSV::CreateNewFile();
+        CSVFile = rapidcsv::Document(CUSTOMERS_LIST_FILE, rapidcsv::LabelParams(0, -1));
+        return;
+    }
+    file.close();
+
+	CSVFile = rapidcsv::Document(CUSTOMERS_LIST_FILE, rapidcsv::LabelParams(0, -1));
 
     vNames = CSVFile.GetColumn<string>(0);
     vBirthdates = CSVFile.GetColumn<string>(1);
@@ -34,6 +46,15 @@ void CustomersListCSV::Load()
     vNotes = CSVFile.GetColumn<string>(6);
 
     customersCount = vCustomerIDs.size();
+}
+
+void CustomersListCSV::CreateNewFile()
+{
+    rapidcsv::Document doc(string(), rapidcsv::LabelParams(-1, -1)); //không nhận cột, ô nào làm label
+    vector<string> v = { "Họ tên","Ngày sinh","SĐT","Địa chỉ","Số CCCD / CMND","Nhóm khách hàng","Ghi chú"};
+    doc.InsertRow<string>(0, v);
+
+    doc.Save(CUSTOMERS_LIST_FILE);
 }
 
 void CustomersListCSV::Save()

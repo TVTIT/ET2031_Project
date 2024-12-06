@@ -7,6 +7,7 @@ class LoansListCSV
 {
 public:
 	static void Load();
+	static void CreateNewFile();
 	static void Interface();
 	static void CalculateInterestAllRow();
 	static void RemoveCustomerLoan(string CCCD);

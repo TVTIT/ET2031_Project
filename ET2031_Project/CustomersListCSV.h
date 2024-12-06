@@ -8,6 +8,7 @@ class CustomersListCSV
 {
 public:
 	static void Load();
+	static void CreateNewFile();
 	static void Interface();
 	static bool IsIDNumberAvailable(string CCCD);
 	static bool IsIDNumberAvailable(string CCCD, string& customerName);
