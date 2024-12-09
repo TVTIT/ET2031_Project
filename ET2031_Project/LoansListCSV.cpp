@@ -209,18 +209,16 @@ string LoansListCSV::InputMoney()
 	return userInput;
 }
 
+//sửa lại ngay cách tính lãi
+//hết hạn rồi vẫn phải tính ra lãi
+//khoản vay nào trả hết rồi (dư dợ <= 0) thì mới k tính nữa
 void LoansListCSV::CalculateInterestAllRow()
 {
 	if (loansCount < 1) return;
 	for (int i = 0; i < loansCount; i++)
 	{
+		if (vTotalOutstandingBalance[i] <= 0) continue;
 		int monthDifferenceLastCal = LoansListCSV::CalculateMonthDifference(vLastCalDate[i], LoansListCSV::GetCurrentDate());
-		int monthDifferenceDateAdded = LoansListCSV::CalculateMonthDifference(vDate[i], LoansListCSV::GetCurrentDate());
-		if (monthDifferenceDateAdded >= vLoanTerm[i])
-		{
-			//int monthDiffDateAddedLastCal = LoansListCSV::CalculateMonthDifference(vDate[i], vLastCalDate[i]);
-			monthDifferenceLastCal = vLoanTerm[i] - LoansListCSV::CalculateMonthDifference(vDate[i], vLastCalDate[i]);
-		}
 		if (monthDifferenceLastCal < 1) continue;
 
 		boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i] / 1200);
