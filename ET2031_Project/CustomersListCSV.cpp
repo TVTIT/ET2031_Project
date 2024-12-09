@@ -13,12 +13,19 @@ using namespace std;
 
 rapidcsv::Document CustomersListCSV::CSVFile;
 
+//Tên khách hàng
 vector<string> CustomersListCSV::vNames;
+//Ngày sinh khách hàng
 vector<string> CustomersListCSV::vBirthdates;
+//SĐT khách hàng
 vector<string> CustomersListCSV::vPhoneNumbers;
+//Địa chỉ khách hàng
 vector<string> CustomersListCSV::vAddresses;
+//CMND/CCCD khách hàng
 vector<string> CustomersListCSV::vCustomerIDs;
+//Nhóm khách hàng
 vector<string> CustomersListCSV::vCustomerGroups;
+//Ghi chú
 vector<string> CustomersListCSV::vNotes;
 
 int CustomersListCSV::customersCount = 0;

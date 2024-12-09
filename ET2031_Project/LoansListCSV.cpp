@@ -19,16 +19,27 @@ using namespace std;
 
 rapidcsv::Document LoansListCSV::CSVFile;
 
+//Mã khoản vay
 vector<string> LoansListCSV::vLoanIDs;
+//CCCD/CMND khách hàng
 vector<string> LoansListCSV::vCustomerIDs;
+//Số tiền cho vay
 vector<long long> LoansListCSV::vLoanAmount;
+//Ngày vay
 vector<string> LoansListCSV::vDate;
+//Hạn vay
 vector<int> LoansListCSV::vLoanTerm;
+//Lãi suất
 vector<double> LoansListCSV::vInterestRate;
+//Tổng lãi phát sinh
 vector<long long> LoansListCSV::vTotalAccuredInterest;
+//Tổng tiền đã trả
 vector<long long> LoansListCSV::vTotalAmountPaid;
+//Tổng dư nợ còn lại
 vector<long long> LoansListCSV::vTotalOutstandingBalance;
+//Ghi chú
 vector<string> LoansListCSV::vNotes;
+//Ngày tính lãi gần nhất
 vector<string> LoansListCSV::vLastCalDate;
 
 int LoansListCSV::loansCount = 0;
@@ -209,9 +220,6 @@ string LoansListCSV::InputMoney()
 	return userInput;
 }
 
-//sửa lại ngay cách tính lãi
-//hết hạn rồi vẫn phải tính ra lãi
-//khoản vay nào trả hết rồi (dư dợ <= 0) thì mới k tính nữa
 void LoansListCSV::CalculateInterestAllRow()
 {
 	if (loansCount < 1) return;
