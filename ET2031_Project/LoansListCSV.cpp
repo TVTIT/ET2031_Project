@@ -5,6 +5,7 @@
 #include <random>
 #include <cmath>
 #include "fmt/base.h"
+#include "fmt/format.h"
 #include "rapidcsv.h"
 #include <boost/math/constants/constants.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
@@ -41,6 +42,8 @@ vector<long long> LoansListCSV::vTotalOutstandingBalance;
 vector<string> LoansListCSV::vNotes;
 //Ngày tính lãi gần nhất
 vector<string> LoansListCSV::vLastCalDate;
+//Lịch sử nộp tiền
+vector<string> LoansListCSV::vLoanHistory;
 
 int LoansListCSV::loansCount = 0;
 
@@ -101,6 +104,7 @@ void LoansListCSV::Load()
 	vTotalOutstandingBalance = CSVFile.GetColumn<long long>(8);
 	vNotes = CSVFile.GetColumn<string>(9);
 	vLastCalDate = CSVFile.GetColumn<string>(10);
+	vLoanHistory = CSVFile.GetColumn<string>(11);
 
 	loansCount = vLoanIDs.size();
 }
@@ -117,7 +121,7 @@ void LoansListCSV::CreateNewFile()
 
 void LoansListCSV::Save()
 {
-	for (int i = 10; i >= 0; i--)
+	for (int i = 11; i >= 0; i--)
 	{
 		CSVFile.RemoveColumn(i);
 	}
@@ -132,6 +136,7 @@ void LoansListCSV::Save()
 	CSVFile.InsertColumn(8, vTotalOutstandingBalance, "Tổng dư nợ còn lại");
 	CSVFile.InsertColumn(9, vNotes, "Ghi chú");
 	CSVFile.InsertColumn(10, vLastCalDate, "Ngày tính lãi gần nhất");
+	CSVFile.InsertColumn(11, vLoanHistory, "Lịch sử nộp tiền");
 
 	CSVFile.Save();
 
@@ -307,11 +312,13 @@ void LoansListCSV::EditLoan(int index)
 		try
 		{
 			fmt::print("Nhập số tiền muốn thêm: ");
-			vTotalAmountPaid[index] += stoll(LoansListCSV::InputMoney());
+			string moneyAdded = LoansListCSV::InputMoney();
+			vTotalAmountPaid[index] += stoll(moneyAdded);
 			vTotalOutstandingBalance[index] = vLoanAmount[index] + vTotalAccuredInterest[index] - vTotalAmountPaid[index];
 			vLastCalDate[index] = LoansListCSV::GetCurrentDate();
+			vLoanHistory[index].append(fmt::format("{0};{1}|", vLastCalDate[index], moneyAdded));
 			fmt::println("Thêm số tiền đã trả thành công");
-			fmt::println("Tổng tiền đã trả hiện tại: {0} đồng", vTotalAmountPaid[index]);
+			fmt::println("Tổng tiền đã trả hiện tại: {0} đồng", LoansListCSV::PreviewMoney(vTotalAmountPaid[index]));
 			LoansListCSV::Save();
 			Main::PauseAndBack();
 			LoansListCSV::Interface();
@@ -360,6 +367,26 @@ void LoansListCSV::RemoveLoan(int index)
 	}
 	Main::PauseAndBack();
 	LoansListCSV::Interface();
+}
+
+void LoansListCSV::ShowLoanHistory(int index)
+{
+	fmt::println("Lịch sử nộp tiền của khoản vay trên:\n");
+
+	vector<string> LoanHistory_splited = Main::SplitString(vLoanHistory[index], '|');
+	if (LoanHistory_splited.size() < 1)
+	{
+		fmt::println("Khoản vay trên chưa có giao dịch nộp tiền nào");
+		return;
+	}
+
+	for (int i = 0; i < LoanHistory_splited.size(); i++)
+	{
+		vector<string> vDate_Money = Main::SplitString(LoanHistory_splited[i], ';');
+		fmt::println("Ngày: {0}", vDate_Money[0]);
+		fmt::println("Số tiền nộp thêm: {0}\n", LoansListCSV::PreviewMoney(stoll(vDate_Money[1])));
+	}
+	fmt::println("Hết lịch sử giao dịch");
 }
 
 void LoansListCSV::AddLoan()
@@ -537,7 +564,8 @@ void LoansListCSV::FindLoanByID()
 	fmt::println("\nCác thao tác với khoản vay");
 	fmt::println("[1] Sửa khoản vay");
 	fmt::println("[2] Xoá khoản vay");
-	fmt::println("[3] Quay lại màn hình khoản vay");
+	fmt::println("[3] Liệt kê lịch sử nộp tiền của khoản vay");
+	fmt::println("[4] Quay lại màn hình khoản vay");
 	fmt::print("Nhập lựa chọn của bạn: ");
 
 	string userInput = Main::UnicodeInput();
@@ -548,6 +576,10 @@ void LoansListCSV::FindLoanByID()
 	else if (userInput == "2")
 	{
 		LoansListCSV::RemoveLoan(index);
+	}
+	else if (userInput == "3")
+	{
+		LoansListCSV::ShowLoanHistory(index);
 	}
 
 	Main::PauseAndBack();

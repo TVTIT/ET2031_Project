@@ -28,6 +28,7 @@ private:
 	static vector<long long> vTotalOutstandingBalance;
 	static vector<string> vNotes;
 	static vector<string> vLastCalDate;
+	static vector<string> vLoanHistory;
 
 	static int loansCount;
 
@@ -43,6 +44,7 @@ private:
 
 	static void EditLoan(int index);
 	static void RemoveLoan(int index);
+	static void ShowLoanHistory(int index);
 
 	static void AddLoan();
 	static void FindLoanByCCCD();
