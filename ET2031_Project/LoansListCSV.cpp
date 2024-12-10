@@ -526,6 +526,16 @@ void LoansListCSV::FindLoanByCCCD(string CCCD)
 	LoansListCSV::Interface();
 }
 
+void LoansListCSV::EditLoanCCCD(string oldCCCD, string newCCCD)
+{
+	for (int i = 0; i < loansCount; i++)
+	{
+		if (vCustomerIDs[i] == oldCCCD)
+			vCustomerIDs[i] = newCCCD;
+	}
+	LoansListCSV::Save();
+}
+
 void LoansListCSV::FindLoanByID()
 {
 	Main::ClearScreen();

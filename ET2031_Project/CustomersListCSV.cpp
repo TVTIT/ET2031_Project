@@ -265,7 +265,9 @@ void CustomersListCSV::EditCustomerInfo(int index)
     else if (userChoice == "5")
     {
         fmt::print("Nhập số CMND/CCCD mới: ");
-        vCustomerIDs[index] = Main::UnicodeInput();
+        string newCCCD = Main::UnicodeInput();
+        LoansListCSV::EditLoanCCCD(vCustomerIDs[index], newCCCD);
+        vCustomerIDs[index] = newCCCD;
     }
     else if (userChoice == "6")
     {
@@ -289,6 +291,8 @@ void CustomersListCSV::EditCustomerInfo(int index)
         CustomersListCSV::EditCustomerInfo(index);
         return;
     }
+    CustomersListCSV::Save();
+    fmt::println("\nSửa thông tin thành công");
 }
 
 void CustomersListCSV::RemoveCustomer()

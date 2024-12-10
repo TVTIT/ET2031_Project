@@ -13,6 +13,7 @@ public:
 	static void RemoveCustomerLoan(string CCCD);
 	static void AddLoan(string CCCD);
 	static void FindLoanByCCCD(string CCCD);
+	static void EditLoanCCCD(string oldCCCD, string newCCCD);
 
 private:
 	static rapidcsv::Document CSVFile;
