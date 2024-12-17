@@ -28,6 +28,7 @@ vector<string> CustomersListCSV::vCustomerGroups;
 //Ghi chú
 vector<string> CustomersListCSV::vNotes;
 
+//Số lượng khách hàng hiện tại
 int CustomersListCSV::customersCount = 0;
 
 /// <summary>
@@ -203,7 +204,8 @@ void CustomersListCSV::FindByIDNumber()
         {
             isCustomerAvail = true;
             index = i;
-            fmt::println("Đã tìm thấy khách hàng!\n");
+            fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Đã tìm thấy khách hàng!");
+            fmt::println("\n");
             fmt::println("Tên khách hàng: " + vNames[i]);
             fmt::println("Ngày sinh: " + vBirthdates[i]);
             fmt::println("SĐT: " + vPhoneNumbers[i]);
@@ -254,7 +256,8 @@ void CustomersListCSV::FindByIDNumber()
     }
     else
     {
-        fmt::println("Không tìm thấy khách hàng!");
+        fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khách hàng!");
+        fmt::println("");
     }
 
     Main::PauseAndBack();
@@ -331,7 +334,9 @@ void CustomersListCSV::EditCustomerInfo(int index)
         return;
     }
     CustomersListCSV::Save();
-    fmt::println("\nSửa thông tin thành công");
+    fmt::println("");
+    fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Sửa thông tin thành công");
+    fmt::println("");
 }
 
 /// <summary>
@@ -346,13 +351,15 @@ void CustomersListCSV::RemoveCustomer()
     int index = 0;
     if (!CustomersListCSV::IsIDNumberAvailable(CCCD, customerName, index))
     {
-        fmt::println("Không tìm thấy khách hàng với số CCCD/CMND trên");
+        fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khách hàng với số CCCD/CMND trên");
+        fmt::println("");
         Main::PauseAndBack();
         CustomersListCSV::Interface();
     }
 
     fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", customerName, CCCD);
-    fmt::println("Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
+    fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
+    fmt::println("");
     fmt::print("Nhấn Y để xoá, N để huỷ: ");
     string userInput = Main::UnicodeInput();
 
@@ -363,7 +370,8 @@ void CustomersListCSV::RemoveCustomer()
         CSVFile.RemoveRow(index);
         CSVFile.Save();
         CustomersListCSV::Load();
-        fmt::println("Xoá khách hàng thành công");
+        fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Xoá khách hàng thành công");
+        fmt::println("");
     }
 
     Main::PauseAndBack();
@@ -377,7 +385,8 @@ void CustomersListCSV::RemoveCustomer()
 void CustomersListCSV::RemoveCustomer(int index)
 {
     fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", vNames[index], vCustomerIDs[index]);
-    fmt::println("Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
+    fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
+    fmt::println("");
     fmt::print("Nhấn Y để xoá, N để huỷ: ");
     string userInput = Main::UnicodeInput();
 
@@ -387,7 +396,8 @@ void CustomersListCSV::RemoveCustomer(int index)
         CSVFile.RemoveRow(index);
         CSVFile.Save();
         CustomersListCSV::Load();
-        fmt::println("Xoá khách hàng thành công");
+        fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Xoá khách hàng thành công");
+        fmt::println("");
     }
 }
 
@@ -424,7 +434,8 @@ void CustomersListCSV::Interface()
     }
     else
     {
-        fmt::println("Lựa chọn không hợp lệ!");
+        fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "Lựa chọn không hợp lệ!");
+        fmt::println("");
         Main::PauseAndBack();
         CustomersListCSV::Interface();
     }

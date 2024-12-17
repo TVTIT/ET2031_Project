@@ -12,6 +12,7 @@
 #include "CustomersListCSV.h"
 #include "LoansListCSV.h"
 
+#define VERSION_LABEL L"v0.1.0-beta"
 
 using namespace std;
 
@@ -57,7 +58,10 @@ void Main::InitializeConsole()
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(hOut, dwMode);
 
-    SetConsoleTitleW(L"Phần mềm Quản lý hệ thống vay nợ");
+    wstring consoleTitle = L"Phần mềm Quản lý hệ thống vay nợ ";
+    consoleTitle.append(VERSION_LABEL);
+
+    SetConsoleTitleW(consoleTitle.c_str());
 }
 
 /// <summary>
@@ -171,7 +175,8 @@ bool Main::ValidateDate(string date)
 
 void Main::DataInputInvalid()
 {
-    fmt::println("Dữ liệu đầu vào không hợp lệ");
+    fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "Dữ liệu đầu vào không hợp lệ");
+    fmt::println("");
     Main::PauseAndBack();
 }
 
@@ -216,7 +221,9 @@ void Main::Interface()
     }
     else
     {
-        fmt::println("Lựa chọn không hợp lệ!");
+        fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "Lựa chọn không hợp lệ!");
+        fmt::println("");
+        Main::PauseAndBack();
         Main::Interface();
     }
 }

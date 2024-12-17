@@ -5,6 +5,7 @@
 #include <random>
 #include <cmath>
 #include "fmt/base.h"
+#include "fmt/color.h"
 #include "fmt/format.h"
 #include "rapidcsv.h"
 #include <boost/math/constants/constants.hpp>
@@ -45,6 +46,7 @@ vector<string> LoansListCSV::vLastCalDate;
 //Lịch sử nộp tiền
 vector<string> LoansListCSV::vLoanHistory;
 
+//Số lượng khoản vay hiện tại
 int LoansListCSV::loansCount = 0;
 
 /// <summary>
@@ -342,7 +344,8 @@ void LoansListCSV::EditLoan(int index)
 		{
 			fmt::print("Nhập thời hạn vay theo tháng: ");
 			vLoanTerm[index] = stoi(Main::UnicodeInput());
-			fmt::println("Cập nhật thời hạn vay thành công");
+			fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Cập nhật thời hạn vay thành công");
+			fmt::println("");
 			LoansListCSV::Save();
 			Main::PauseAndBack();
 			LoansListCSV::Interface();
@@ -366,7 +369,8 @@ void LoansListCSV::EditLoan(int index)
 			vTotalOutstandingBalance[index] = vLoanAmount[index] + vTotalAccuredInterest[index] - vTotalAmountPaid[index];
 			vLastCalDate[index] = LoansListCSV::GetCurrentDate();
 			vLoanHistory[index].append(fmt::format("{0};{1}|", vLastCalDate[index], moneyAdded));
-			fmt::println("Thêm số tiền đã trả thành công");
+			fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Thêm số tiền đã trả thành công");
+			fmt::println("");
 			fmt::println("Tổng tiền đã trả hiện tại: {0} đồng", LoansListCSV::PreviewMoney(vTotalAmountPaid[index]));
 			LoansListCSV::Save();
 			Main::PauseAndBack();
@@ -386,7 +390,8 @@ void LoansListCSV::EditLoan(int index)
 	{
 		fmt::print("Nhập ghi chú: ");
 		vNotes[index] = Main::UnicodeInput();
-		fmt::println("Cập nhật ghi chú thành công");
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Cập nhật ghi chú thành công");
+		fmt::println("");
 		LoansListCSV::Save();
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
@@ -416,7 +421,8 @@ void LoansListCSV::RemoveLoan(int index)
 		CSVFile.Save();
 		LoansListCSV::Load();
 
-		fmt::println("Xoá khoản vay thành công");
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Xoá khoản vay thành công");
+		fmt::println("");
 	}
 	Main::PauseAndBack();
 	LoansListCSV::Interface();
@@ -433,7 +439,8 @@ void LoansListCSV::ShowLoanHistory(int index)
 	vector<string> LoanHistory_splited = Main::SplitString(vLoanHistory[index], '|');
 	if (LoanHistory_splited.size() < 1)
 	{
-		fmt::println("Khoản vay trên chưa có giao dịch nộp tiền nào");
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::gray), "Khoản vay trên chưa có giao dịch nộp tiền nào");
+		fmt::println("");
 		return;
 	}
 
@@ -443,7 +450,8 @@ void LoansListCSV::ShowLoanHistory(int index)
 		fmt::println("Ngày: {0}", vDate_Money[0]);
 		fmt::println("Số tiền nộp thêm: {0}\n", LoansListCSV::PreviewMoney(stoll(vDate_Money[1])));
 	}
-	fmt::println("Hết lịch sử giao dịch");
+	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::gray), "Hết lịch sử giao dịch");
+	fmt::println("");
 }
 
 /// <summary>
@@ -471,7 +479,8 @@ void LoansListCSV::AddLoan(string CCCD)
 	}
 	else
 	{
-		fmt::println("Số CCCD/CMND không tồn tại, hãy thêm khách hàng trước khi thêm tài sản");
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Số CCCD/CMND không tồn tại, hãy thêm khách hàng trước khi thêm khoản vay");
+		fmt::println("");
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
 	}
@@ -544,7 +553,8 @@ void LoansListCSV::AddLoan(string CCCD)
 	vLastCalDate.push_back(date);
 	LoansListCSV::Save();
 
-	fmt::println("Khoản vay đã được tạo thành công với mã khoản vay: {0}\n", ID);
+	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Khoản vay đã được tạo thành công với mã khoản vay: {0}", ID);
+	fmt::println("\n");
 
 	Main::PauseAndBack();
 	LoansListCSV::Interface();
@@ -570,7 +580,8 @@ void LoansListCSV::FindLoanByCCCD(string CCCD)
 	string customerName;
 	if (!CustomersListCSV::IsIDNumberAvailable(CCCD, customerName))
 	{
-		fmt::println("Không tìm thấy khách hàng với số CCCD/CMND trên");
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khách hàng với số CCCD/CMND trên");
+		fmt::println("");
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
 		return;
@@ -592,7 +603,7 @@ void LoansListCSV::FindLoanByCCCD(string CCCD)
 			fmt::println("Tổng tiền dư nợ còn lại: {0} đồng\n", PreviewMoney(vTotalOutstandingBalance[i]));
 		}
 	}
-	if (!isLoanAvail) fmt::println("Không tìm thấy khoản vay nào");
+	if (!isLoanAvail) fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "Không tìm thấy khoản vay nào"); fmt::println("");
 	Main::PauseAndBack();
 	LoansListCSV::Interface();
 }
@@ -644,7 +655,8 @@ void LoansListCSV::FindLoanByID()
 	}
 	if (!isLoanAvail)
 	{
-		fmt::println("Không tìm thấy khoản vay nào");
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khoản vay nào");
+		fmt::println("");
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
 		return;
@@ -704,7 +716,8 @@ void LoansListCSV::ShowLoansExpired()
 	}
 	if (indexExpried.size() == 0)
 	{
-		fmt::println("Không tìm thấy khoản vay nào hết hạn");
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khoản vay nào hết hạn");
+		fmt::println("");
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
 		return;
@@ -725,7 +738,8 @@ void LoansListCSV::ShowLoansExpired()
 		}
 		CSVFile.Save();
 		LoansListCSV::Load();
-		fmt::println("Đã xoá thành công");
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Đã xoá thành công");
+		fmt::println("");
 	}
 
 	Main::PauseAndBack();
@@ -771,7 +785,8 @@ void LoansListCSV::Interface()
 	}
 	else
 	{
-		fmt::println("Lựa chọn không hợp lệ!");
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "Lựa chọn không hợp lệ!");
+		fmt::println("");
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
 	}
