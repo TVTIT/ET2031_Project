@@ -17,6 +17,9 @@ using namespace std;
 
 string Main::DirectoryPath;
 
+/// <summary>
+/// Lấy đường dẫn của file .exe và lưu vào string Main::DirectoryPath
+/// </summary>
 void Main::GetPath()
 {
     char PathWithExe[MAX_PATH];
@@ -25,6 +28,10 @@ void Main::GetPath()
     Main::DirectoryPath = str_PathWithExe.substr(0, str_PathWithExe.find_last_of("\\/"));
 }
 
+/// <summary>
+/// Lấy input từ bàn phím, cho phép ký tự có dấu (Unicode)
+/// </summary>
+/// <returns></returns>
 string Main::UnicodeInput()
 {
     _setmode(_fileno(stdin), _O_U16TEXT);
@@ -39,6 +46,9 @@ string Main::UnicodeInput()
     return s_userInput;
 }
 
+/// <summary>
+/// Khởi tạo console, cho phép output có màu và đặt title
+/// </summary>
 void Main::InitializeConsole()
 {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -50,6 +60,10 @@ void Main::InitializeConsole()
     SetConsoleTitleW(L"Phần mềm Quản lý hệ thống vay nợ");
 }
 
+/// <summary>
+/// Xoá hết chữ trên console thay vì phải gọi system("cls") thiếu bảo mật
+/// Source: https://stackoverflow.com/a/39762968
+/// </summary>
 void Main::ClearScreen()
 {
     HANDLE                     hStdOut;
@@ -87,6 +101,12 @@ void Main::ClearScreen()
     SetConsoleCursorPosition(hStdOut, homeCoords);
 }
 
+/// <summary>
+/// Chia string thành các vector<string> bằng 1 ký tự phân tách
+/// </summary>
+/// <param name="input">string cần chia</param>
+/// <param name="pattern">Ký tự phân tách</param>
+/// <returns></returns>
 vector<string> Main::SplitString(string input, char pattern)
 {
     stringstream sstream(input);
@@ -100,6 +120,11 @@ vector<string> Main::SplitString(string input, char pattern)
     return input_splited;
 }
 
+/// <summary>
+/// Kiểm tra ngày tháng xem có đúng định dạng dd/MM/yyyy không
+/// </summary>
+/// <param name="date">string để kiểm tra</param>
+/// <returns></returns>
 bool Main::ValidateDate(string date)
 {
     vector<string> date_splited = SplitString(date, '/');
@@ -163,6 +188,9 @@ void Main::PauseAndExit()
     exit(1);
 }
 
+/// <summary>
+/// Hiển thị giao diện chính
+/// </summary>
 void Main::Interface()
 {
     Main::ClearScreen();
@@ -193,6 +221,14 @@ void Main::Interface()
     }
 }
 
+/// <summary>
+/// Thứ tự chạy hàm main:
+/// Lấy đường dẫn của phần mềm
+/// Load 2 file CSV chứa dữ liệu khách hàng và khoản vay
+/// Tính toán lãi của khoản vay
+/// Khởi tạo console và hiện giao diện chính
+/// </summary>
+/// <returns></returns>
 int main()
 {
     Main::GetPath();

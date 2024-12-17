@@ -30,10 +30,14 @@ vector<string> CustomersListCSV::vNotes;
 
 int CustomersListCSV::customersCount = 0;
 
+/// <summary>
+/// Load file CSV chứa dữ liệu khách hàng và lưu vào các vector
+/// </summary>
 void CustomersListCSV::Load()
 {
     ifstream file;
     file.open(CUSTOMERS_LIST_FILE);
+    //Nếu file CSV không tồn tại, tạo file CSV mới
     if (!file)
     {
         CustomersListCSV::CreateNewFile();
@@ -55,6 +59,9 @@ void CustomersListCSV::Load()
     customersCount = vCustomerIDs.size();
 }
 
+/// <summary>
+/// Tạo file CSV mới nếu không có sẵn
+/// </summary>
 void CustomersListCSV::CreateNewFile()
 {
     rapidcsv::Document doc(string(), rapidcsv::LabelParams(-1, -1)); //không nhận cột, ô nào làm label
@@ -64,6 +71,9 @@ void CustomersListCSV::CreateNewFile()
     doc.Save(CUSTOMERS_LIST_FILE);
 }
 
+/// <summary>
+/// Lưu file CSV với dữ liệu đang có trong các vector
+/// </summary>
 void CustomersListCSV::Save()
 {
     for (int i = 6; i >= 0; i--)
@@ -83,6 +93,11 @@ void CustomersListCSV::Save()
     CustomersListCSV::Load();
 }
 
+/// <summary>
+/// Kiểm tra xem số CCCD/CMND có tồn tại không
+/// </summary>
+/// <param name="CCCD">CCCD/CMND của khách hàng</param>
+/// <returns>CCCD/CMND có tồn tại không</returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD)
 {
 	for (int i = 0; i < customersCount; i++)
@@ -95,6 +110,12 @@ bool CustomersListCSV::IsIDNumberAvailable(string CCCD)
     return false;
 }
 
+/// <summary>
+/// Kiểm tra xem số CCCD/CMND có tồn tại không và trả về tên khách hàng nếu tồn tại
+/// </summary>
+/// <param name="CCCD">CCCD/CMND của khách hàng</param>
+/// <param name="customerName">Tên khách hàng nếu CCCD/CMND tồn tại</param>
+/// <returns>CCCD/CMND có tồn tại không</returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName)
 {
     for (int i = 0; i < customersCount; i++)
@@ -108,6 +129,13 @@ bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName)
     return false;
 }
 
+/// <summary>
+/// Kiểm tra xem số CCCD/CMND có tồn tại không và trả về tên khách hàng nếu tồn tại
+/// </summary>
+/// <param name="CCCD">CCCD/CMND của khách hàng</param>
+/// <param name="customerName">Tên khách hàng nếu CCCD/CMND tồn tại</param>
+/// <param name="index">index trong các vector nếu CCCD/CMND tồn tại</param>
+/// <returns></returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName, int& index)
 {
     for (int i = 0; i < customersCount; i++)
@@ -122,6 +150,9 @@ bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName, in
     return false;
 }
 
+/// <summary>
+/// Thêm khách hàng
+/// </summary>
 void CustomersListCSV::AddCustomer()
 {
     Main::ClearScreen();
@@ -155,6 +186,9 @@ void CustomersListCSV::AddCustomer()
     CustomersListCSV::Interface();
 }
 
+/// <summary>
+/// Tìm khách hàng bằng số CCCD/CMND
+/// </summary>
 void CustomersListCSV::FindByIDNumber()
 {
     Main::ClearScreen();
@@ -227,6 +261,10 @@ void CustomersListCSV::FindByIDNumber()
     CustomersListCSV::Interface();
 }
 
+/// <summary>
+/// Thay đổi thông tin khách hàng
+/// </summary>
+/// <param name="index">index của vector chứa thông tin khách hàng cần thay đổi</param>
 void CustomersListCSV::EditCustomerInfo(int index)
 {
     Main::ClearScreen();
@@ -266,6 +304,7 @@ void CustomersListCSV::EditCustomerInfo(int index)
     {
         fmt::print("Nhập số CMND/CCCD mới: ");
         string newCCCD = Main::UnicodeInput();
+        //Thay đổi CCCD trên tất cả các khoản vay hiện tại
         LoansListCSV::EditLoanCCCD(vCustomerIDs[index], newCCCD);
         vCustomerIDs[index] = newCCCD;
     }
@@ -295,6 +334,9 @@ void CustomersListCSV::EditCustomerInfo(int index)
     fmt::println("\nSửa thông tin thành công");
 }
 
+/// <summary>
+/// Xoá khách hàng đồng thời toàn bộ khoản vay khách hàng đó
+/// </summary>
 void CustomersListCSV::RemoveCustomer()
 {
     Main::ClearScreen();
@@ -316,6 +358,7 @@ void CustomersListCSV::RemoveCustomer()
 
     if (userInput == "y" || userInput == "Y")
     {
+        //Xoá tất cả khoản vay của khách hàng
         LoansListCSV::RemoveCustomerLoan(CCCD);
         CSVFile.RemoveRow(index);
         CSVFile.Save();
@@ -327,6 +370,10 @@ void CustomersListCSV::RemoveCustomer()
     CustomersListCSV::Interface();
 }
 
+/// <summary>
+/// Xoá khách hàng (dùng ở hàm tìm thông tin khách hàng)
+/// </summary>
+/// <param name="index">index của vector chứa thông tin khách hàng</param>
 void CustomersListCSV::RemoveCustomer(int index)
 {
     fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", vNames[index], vCustomerIDs[index]);
@@ -344,6 +391,9 @@ void CustomersListCSV::RemoveCustomer(int index)
     }
 }
 
+/// <summary>
+/// Giao diện khách hàng
+/// </summary>
 void CustomersListCSV::Interface()
 {
 	Main::ClearScreen();

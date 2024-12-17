@@ -69,6 +69,11 @@ string LoansListCSV::GenerateID()
 	return randomID;
 }
 
+/// <summary>
+/// Kiểm tra mã khoản vay đã tồn tại hay không
+/// </summary>
+/// <param name="ID">ID khoản vay cần kiểm tra</param>
+/// <returns>Khoản vay tồn tại hay không</returns>
 bool LoansListCSV::IsLoanIDExist(string ID)
 {
 	for (int i = 0; i < loansCount; i++)
@@ -79,10 +84,14 @@ bool LoansListCSV::IsLoanIDExist(string ID)
 	return false;
 }
 
+/// <summary>
+/// Load file CSV chứa dữ liệu khoản vay và lưu vào các vector
+/// </summary>
 void LoansListCSV::Load()
 {
 	ifstream file;
 	file.open(LOANS_LIST_FILE);
+	//Nếu file CSV không tồn tại, tạo file CSV mới
 	if (!file)
 	{
 		LoansListCSV::CreateNewFile();
@@ -109,6 +118,9 @@ void LoansListCSV::Load()
 	loansCount = vLoanIDs.size();
 }
 
+/// <summary>
+/// Tạo file CSV mới
+/// </summary>
 void LoansListCSV::CreateNewFile()
 {
 	rapidcsv::Document doc(string(), rapidcsv::LabelParams(-1, -1)); //không nhận cột, ô nào làm label
@@ -143,6 +155,10 @@ void LoansListCSV::Save()
 	LoansListCSV::Load();
 }
 
+/// <summary>
+/// Lấy ngày tháng năm hiện tại trên máy
+/// </summary>
+/// <returns>dd/MM/yyyy</returns>
 string LoansListCSV::GetCurrentDate()
 {
 	auto now = std::chrono::system_clock::now();
@@ -158,6 +174,12 @@ string LoansListCSV::GetCurrentDate()
 	return oss.str();
 }
 
+/// <summary>
+/// Tính toán khoảng cách tháng giữa 2 ngày
+/// </summary>
+/// <param name="date1"></param>
+/// <param name="date2"></param>
+/// <returns></returns>
 int LoansListCSV::CalculateMonthDifference(string date1, string date2)
 {
 	tm tm1 = {}, tm2 = {};
@@ -197,6 +219,12 @@ int LoansListCSV::CalculateMonthDifference(string date1, string date2)
 	return totalMonths + dayFraction;
 }
 
+/// <summary>
+/// Hiển thị số tiền dưới dạng dễ đọc
+/// Ví dụ: 100.000 thay vì 100000
+/// </summary>
+/// <param name="input"></param>
+/// <returns></returns>
 string LoansListCSV::PreviewMoney(long long input)
 {
 	string str_input = to_string(input);
@@ -214,6 +242,12 @@ string LoansListCSV::PreviewMoney(long long input)
 	return output;
 }
 
+/// <summary>
+/// Hàm để nhập số tiền
+/// Có thể nhập dạng 1.000.000 hoặc 10.00.000 hoặc 1000000
+/// Hàm sẽ tự động loại bỏ dấu chấm
+/// </summary>
+/// <returns>Input người dùng đã bỏ dấu chấm</returns>
 string LoansListCSV::InputMoney()
 {
 	string userInput = Main::UnicodeInput();
@@ -225,15 +259,22 @@ string LoansListCSV::InputMoney()
 	return userInput;
 }
 
+/// <summary>
+/// Tính toán lãi phát sinh của từng khoản vay
+/// </summary>
 void LoansListCSV::CalculateInterestAllRow()
 {
+	//Nếu số khoản vay < 1 thì không tính nữa
 	if (loansCount < 1) return;
 	for (int i = 0; i < loansCount; i++)
 	{
+		//Nếu khoản vay đã trả hết thì không tính khoản vay này nữa
 		if (vTotalOutstandingBalance[i] <= 0) continue;
 		int monthDifferenceLastCal = LoansListCSV::CalculateMonthDifference(vLastCalDate[i], LoansListCSV::GetCurrentDate());
+		//Nếu khoảng cách tháng giữa ngày tính gần nhất và ngày hiện tại < 1 thì không tính khoản vay này nữa
 		if (monthDifferenceLastCal < 1) continue;
 
+		//Sử dụng cpp_dec_float_50 trong thư viện boost/multiprecision để tính toán chính xác
 		boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i] / 1200);
 		boost::multiprecision::cpp_dec_float_50 currentMoney(vTotalOutstandingBalance[i]);
 		boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * pow((1 + rate), monthDifferenceLastCal);
@@ -247,6 +288,10 @@ void LoansListCSV::CalculateInterestAllRow()
 	LoansListCSV::Save();
 }
 
+/// <summary>
+/// Xoá tất cả khoản vay của khách hàng
+/// </summary>
+/// <param name="CCCD"></param>
 void LoansListCSV::RemoveCustomerLoan(string CCCD)
 {
 	bool loanAvail = false;
@@ -267,6 +312,10 @@ void LoansListCSV::RemoveCustomerLoan(string CCCD)
 	}
 }
 
+/// <summary>
+/// Chỉnh sửa khoản vay
+/// </summary>
+/// <param name="index">index của vector chứa dữ liệu khoản vay</param>
 void LoansListCSV::EditLoan(int index)
 {
 	Main::ClearScreen();
@@ -351,6 +400,10 @@ void LoansListCSV::EditLoan(int index)
 	}
 }
 
+/// <summary>
+/// Xoá khoản vay
+/// </summary>
+/// <param name="index">index của vector chứa dữ liệu khoản vay</param>
 void LoansListCSV::RemoveLoan(int index)
 {
 	fmt::println("Bạn có chắc chắn muốn xoá khoản vay trên");
@@ -369,6 +422,10 @@ void LoansListCSV::RemoveLoan(int index)
 	LoansListCSV::Interface();
 }
 
+/// <summary>
+/// Hiển thị lịch sử đóng tiền của khoản vay
+/// </summary>
+/// <param name="index">index của vector chứa dữ liệu khoản vay</param>
 void LoansListCSV::ShowLoanHistory(int index)
 {
 	fmt::println("Lịch sử nộp tiền của khoản vay trên:\n");
@@ -389,6 +446,9 @@ void LoansListCSV::ShowLoanHistory(int index)
 	fmt::println("Hết lịch sử giao dịch");
 }
 
+/// <summary>
+/// Thêm khoản vay (gọi từ LoansListCSV::Interface())
+/// </summary>
 void LoansListCSV::AddLoan()
 {
 	Main::ClearScreen();
@@ -399,6 +459,10 @@ void LoansListCSV::AddLoan()
 	LoansListCSV::AddLoan(CCCD);
 }
 
+/// <summary>
+/// Thêm khoản vay (gọi từ class CustomerListCSV)
+/// </summary>
+/// <param name="CCCD"></param>
 void LoansListCSV::AddLoan(string CCCD)
 {
 	if (CustomersListCSV::IsIDNumberAvailable(CCCD))
@@ -486,6 +550,9 @@ void LoansListCSV::AddLoan(string CCCD)
 	LoansListCSV::Interface();
 }
 
+/// <summary>
+/// Tìm khoản vay theo CCCD (gọi từ LoansListCSV::Interface())
+/// </summary>
 void LoansListCSV::FindLoanByCCCD()
 {
 	Main::ClearScreen();
@@ -494,6 +561,10 @@ void LoansListCSV::FindLoanByCCCD()
 	LoansListCSV::FindLoanByCCCD(CCCD);
 }
 
+/// <summary>
+/// Tìm khoản vay theo CCCD (gọi từ class CustomerListCSV)
+/// </summary>
+/// <param name="CCCD"></param>
 void LoansListCSV::FindLoanByCCCD(string CCCD)
 {
 	string customerName;
@@ -526,6 +597,11 @@ void LoansListCSV::FindLoanByCCCD(string CCCD)
 	LoansListCSV::Interface();
 }
 
+/// <summary>
+/// Thay đổi số CCCD trên tất cả khoản vay hiện tại của khách hàng
+/// </summary>
+/// <param name="oldCCCD">CCCD cũ</param>
+/// <param name="newCCCD">CCCD mới</param>
 void LoansListCSV::EditLoanCCCD(string oldCCCD, string newCCCD)
 {
 	for (int i = 0; i < loansCount; i++)
@@ -536,6 +612,9 @@ void LoansListCSV::EditLoanCCCD(string oldCCCD, string newCCCD)
 	LoansListCSV::Save();
 }
 
+/// <summary>
+/// Tìm khoản vay theo mã khoản vay
+/// </summary>
 void LoansListCSV::FindLoanByID()
 {
 	Main::ClearScreen();
@@ -596,6 +675,9 @@ void LoansListCSV::FindLoanByID()
 	LoansListCSV::Interface();
 }
 
+/// <summary>
+/// Liệt kê các khoản vay hết hạn
+/// </summary>
 void LoansListCSV::ShowLoansExpired()
 {
 	Main::ClearScreen();
@@ -650,6 +732,9 @@ void LoansListCSV::ShowLoansExpired()
 	LoansListCSV::Interface();
 }
 
+/// <summary>
+/// Giao diện khoản vay
+/// </summary>
 void LoansListCSV::Interface()
 {
 	Main::ClearScreen();
