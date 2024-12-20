@@ -135,24 +135,21 @@ void LoansListCSV::CreateNewFile()
 
 void LoansListCSV::Save()
 {
-	for (int i = 11; i >= 0; i--)
-	{
-		CSVFile.RemoveColumn(i);
-	}
-	CSVFile.InsertColumn(0, vLoanIDs, "Mã khoản vay");
-	CSVFile.InsertColumn(1, vCustomerIDs, "Số CCCD khách hàng");
-	CSVFile.InsertColumn(2, vLoanAmount, "Số tiền vay");
-	CSVFile.InsertColumn(3, vDate, "Ngày vay");
-	CSVFile.InsertColumn(4, vLoanTerm, "Thời hạn vay");
-	CSVFile.InsertColumn(5, vInterestRate, "Lãi suất");
-	CSVFile.InsertColumn(6, vTotalAccuredInterest, "Tổng lãi phát sinh");
-	CSVFile.InsertColumn(7, vTotalAmountPaid, "Tổng tiền đã trả");
-	CSVFile.InsertColumn(8, vTotalOutstandingBalance, "Tổng dư nợ còn lại");
-	CSVFile.InsertColumn(9, vNotes, "Ghi chú");
-	CSVFile.InsertColumn(10, vLastCalDate, "Ngày tính lãi gần nhất");
-	CSVFile.InsertColumn(11, vLoanHistory, "Lịch sử nộp tiền");
+	rapidcsv::Document doc = rapidcsv::Document(string(), rapidcsv::LabelParams(0, -1));
+	doc.InsertColumn(0, vLoanIDs, "Mã khoản vay");
+	doc.InsertColumn(1, vCustomerIDs, "Số CCCD khách hàng");
+	doc.InsertColumn(2, vLoanAmount, "Số tiền vay");
+	doc.InsertColumn(3, vDate, "Ngày vay");
+	doc.InsertColumn(4, vLoanTerm, "Thời hạn vay");
+	doc.InsertColumn(5, vInterestRate, "Lãi suất");
+	doc.InsertColumn(6, vTotalAccuredInterest, "Tổng lãi phát sinh");
+	doc.InsertColumn(7, vTotalAmountPaid, "Tổng tiền đã trả");
+	doc.InsertColumn(8, vTotalOutstandingBalance, "Tổng dư nợ còn lại");
+	doc.InsertColumn(9, vNotes, "Ghi chú");
+	doc.InsertColumn(10, vLastCalDate, "Ngày tính lãi gần nhất");
+	doc.InsertColumn(11, vLoanHistory, "Lịch sử nộp tiền");
 
-	CSVFile.Save();
+	doc.Save(LOANS_LIST_FILE);
 
 	LoansListCSV::Load();
 }

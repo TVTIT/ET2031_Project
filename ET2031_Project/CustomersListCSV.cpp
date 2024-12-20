@@ -74,18 +74,15 @@ void CustomersListCSV::CreateNewFile()
 /// </summary>
 void CustomersListCSV::Save()
 {
-    for (int i = 5; i >= 0; i--)
-    {
-        CSVFile.RemoveColumn(i);
-    }
-    CSVFile.InsertColumn(0, vNames, "Họ tên");
-    CSVFile.InsertColumn(1, vBirthdates, "Ngày sinh");
-    CSVFile.InsertColumn(2, vPhoneNumbers, "SĐT");
-    CSVFile.InsertColumn(3, vAddresses, "Địa chỉ");
-    CSVFile.InsertColumn(4, vCustomerIDs, "Số CCCD/CMND");
-    CSVFile.InsertColumn(5, vNotes, "Ghi chú");
+    rapidcsv::Document doc = rapidcsv::Document(string(), rapidcsv::LabelParams(0, -1));
+    doc.InsertColumn(0, vNames, "Họ tên");
+    doc.InsertColumn(1, vBirthdates, "Ngày sinh");
+    doc.InsertColumn(2, vPhoneNumbers, "SĐT");
+    doc.InsertColumn(3, vAddresses, "Địa chỉ");
+    doc.InsertColumn(4, vCustomerIDs, "Số CCCD/CMND");
+    doc.InsertColumn(5, vNotes, "Ghi chú");
 
-    CSVFile.Save();
+    doc.Save(CUSTOMERS_LIST_FILE);
 
     CustomersListCSV::Load();
 }
