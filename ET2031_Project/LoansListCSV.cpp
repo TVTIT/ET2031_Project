@@ -802,6 +802,49 @@ void LoansListCSV::ShowLoansPaidOff()
 }
 
 /// <summary>
+/// Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ
+/// </summary>
+void LoansListCSV::CalculateTotalMoney()
+{
+	Main::ClearScreen();
+	fmt::println("Đang tính toán...\n");
+
+	long long tienChoVay = 0, tongLai = 0;
+
+	for (int i = 0; i < loansCount; i++)
+	{
+		tienChoVay += vLoanAmount[i];
+		
+		//Tính tổng lãi
+		if (vTotalOutstandingBalance[i] > 0)
+		{
+			int monthDifference = vLoanTerm[i] - LoansListCSV::CalculateMonthDifference(vDate[i], vLastCalDate[i]);
+			if (monthDifference > 0)
+			{
+				boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i] / 1200);
+				boost::multiprecision::cpp_dec_float_50 currentMoney(vTotalOutstandingBalance[i]);
+				//Tổng lãi phát sinh dự kiến = tổng lãi phát sinh của số tiền còn nợ cho đến hết hạn khoản vay
+				boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * pow((1 + rate), monthDifference);
+
+				//Tổng lãi = tổng lãi phát sinh đã tính toán + Tổng lãi phát sinh dự kiến
+				tongLai += vTotalAccuredInterest[i] + futureMoney.convert_to<long long>();
+			}
+		}
+	}
+
+	fmt::println("Số khoản vay hiện tại: {0}", loansCount);
+	fmt::println("Tổng số tiền cho vay (1): {0} đồng", PreviewMoney(tienChoVay));
+	fmt::println("Tổng lãi phát sinh dự kiến (2): {0} đồng", PreviewMoney(tongLai));
+	fmt::println("Dự kiến số tiền sau khi thu hồi nợ ((3) = (1) + (2): {0} đồng\n", PreviewMoney(tienChoVay + tongLai));
+
+	fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Lưu ý: Dữ liệu trên chỉ là dự kiến, số liệu có thể thay đổi phụ thuộc vào cách trả nợ của người vay");
+	fmt::println("\n");
+
+	Main::PauseAndBack();
+	LoansListCSV::Interface();
+}
+
+/// <summary>
 /// Giao diện khoản vay
 /// </summary>
 void LoansListCSV::Interface()
@@ -812,7 +855,8 @@ void LoansListCSV::Interface()
 	fmt::println("[3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó");
 	fmt::println("[4] Liệt kê các khoản vay hết hạn");
 	fmt::println("[5] Liệt kê các khoản vay đã trả hết nợ");
-	fmt::println("[6] Quay lại màn hình chính");
+	fmt::println("[6] Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ,...");
+	fmt::println("[7] Quay lại màn hình chính");
 
 	fmt::print("Nhập lựa chọn của bạn: ");
 
@@ -840,6 +884,10 @@ void LoansListCSV::Interface()
 		LoansListCSV::ShowLoansPaidOff();
 	}
 	else if (userInput == "6")
+	{
+		LoansListCSV::CalculateTotalMoney();
+	}
+	else if (userInput == "7")
 	{
 		Main::Interface();
 	}
