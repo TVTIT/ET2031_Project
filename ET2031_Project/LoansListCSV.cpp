@@ -23,7 +23,7 @@ rapidcsv::Document LoansListCSV::CSVFile;
 
 //Mã khoản vay
 vector<string> LoansListCSV::vLoanIDs;
-//CCCD/CMND khách hàng
+//CCCD khách hàng
 vector<string> LoansListCSV::vCustomerIDs;
 //Số tiền cho vay
 vector<long long> LoansListCSV::vLoanAmount;
@@ -319,7 +319,7 @@ void LoansListCSV::EditLoan(int index)
 {
 	Main::ClearScreen();
 	fmt::println("Mã khoản vay: {0}", vLoanIDs[index]);
-	fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[index]);
+	fmt::println("Số CCCD của khách hàng: {0}", vCustomerIDs[index]);
 	fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[index]));
 	fmt::println("Ngày vay: {0}", vDate[index]);
 	fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[index]);
@@ -458,7 +458,7 @@ void LoansListCSV::AddLoan()
 {
 	Main::ClearScreen();
 
-	fmt::print("Nhập số CCCD/CMND của khách hàng: ");
+	fmt::print("Nhập số CCCD của khách hàng: ");
 	string CCCD = Main::UnicodeInput();
 
 	LoansListCSV::AddLoan(CCCD);
@@ -476,7 +476,7 @@ void LoansListCSV::AddLoan(string CCCD)
 	}
 	else
 	{
-		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Số CCCD/CMND không tồn tại, hãy thêm khách hàng trước khi thêm khoản vay");
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Số CCCD không tồn tại, hãy thêm khách hàng trước khi thêm khoản vay");
 		fmt::println("");
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
@@ -563,7 +563,7 @@ void LoansListCSV::AddLoan(string CCCD)
 void LoansListCSV::FindLoanByCCCD()
 {
 	Main::ClearScreen();
-	fmt::print("Nhập số CCCD/CMND của khách hàng: ");
+	fmt::print("Nhập số CCCD của khách hàng: ");
 	string CCCD = Main::UnicodeInput();
 	LoansListCSV::FindLoanByCCCD(CCCD);
 }
@@ -577,7 +577,7 @@ void LoansListCSV::FindLoanByCCCD(string CCCD)
 	string customerName;
 	if (!CustomersListCSV::IsIDNumberAvailable(CCCD, customerName))
 	{
-		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khách hàng với số CCCD/CMND trên");
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khách hàng với số CCCD trên");
 		fmt::println("");
 		Main::PauseAndBack();
 		LoansListCSV::Interface();
@@ -639,7 +639,7 @@ void LoansListCSV::FindLoanByID()
 			isLoanAvail = true;
 			index = i;
 			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
-			fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[i]);
+			fmt::println("Số CCCD của khách hàng: {0}", vCustomerIDs[i]);
 			fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[i]));
 			fmt::println("Ngày vay: {0}", vDate[i]);
 			fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[i]);
@@ -700,7 +700,7 @@ void LoansListCSV::ShowLoansExpired()
 		if (monthDifference >= vLoanTerm[i])
 		{
 			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
-			fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[i]);
+			fmt::println("Số CCCD của khách hàng: {0}", vCustomerIDs[i]);
 			fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[i]));
 			fmt::println("Ngày vay: {0}", vDate[i]);
 			fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[i]);
@@ -758,7 +758,7 @@ void LoansListCSV::ShowLoansPaidOff()
 		if (vTotalOutstandingBalance[i] <= 0)
 		{
 			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
-			fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[i]);
+			fmt::println("Số CCCD của khách hàng: {0}", vCustomerIDs[i]);
 			fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[i]));
 			fmt::println("Ngày vay: {0}", vDate[i]);
 			fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[i]);
@@ -847,7 +847,7 @@ void LoansListCSV::ShowLoansOverDue()
 		{
 			isAvail = true;
 			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
-			fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[i]);
+			fmt::println("Số CCCD của khách hàng: {0}", vCustomerIDs[i]);
 			fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[i]));
 			fmt::println("Ngày vay: {0}", vDate[i]);
 			fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[i]);

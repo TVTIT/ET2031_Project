@@ -21,7 +21,7 @@ vector<string> CustomersListCSV::vBirthdates;
 vector<string> CustomersListCSV::vPhoneNumbers;
 //Địa chỉ khách hàng
 vector<string> CustomersListCSV::vAddresses;
-//CMND/CCCD khách hàng
+//CCCD khách hàng
 vector<string> CustomersListCSV::vCustomerIDs;
 //Ghi chú
 vector<string> CustomersListCSV::vNotes;
@@ -63,7 +63,7 @@ void CustomersListCSV::Load()
 void CustomersListCSV::CreateNewFile()
 {
     rapidcsv::Document doc(string(), rapidcsv::LabelParams(-1, -1)); //không nhận cột, ô nào làm label
-    vector<string> v = { "Họ tên","Ngày sinh","SĐT","Địa chỉ","Số CCCD / CMND","Ghi chú"};
+    vector<string> v = { "Họ tên","Ngày sinh","SĐT","Địa chỉ","Số CCCD","Ghi chú"};
     doc.InsertRow<string>(0, v);
 
     doc.Save(CUSTOMERS_LIST_FILE);
@@ -79,7 +79,7 @@ void CustomersListCSV::Save()
     doc.InsertColumn(1, vBirthdates, "Ngày sinh");
     doc.InsertColumn(2, vPhoneNumbers, "SĐT");
     doc.InsertColumn(3, vAddresses, "Địa chỉ");
-    doc.InsertColumn(4, vCustomerIDs, "Số CCCD/CMND");
+    doc.InsertColumn(4, vCustomerIDs, "Số CCCD");
     doc.InsertColumn(5, vNotes, "Ghi chú");
 
     doc.Save(CUSTOMERS_LIST_FILE);
@@ -88,12 +88,13 @@ void CustomersListCSV::Save()
 }
 
 /// <summary>
-/// Kiểm tra xem số CCCD/CMND có tồn tại không
+/// Kiểm tra xem số CCCD có tồn tại không
 /// </summary>
-/// <param name="CCCD">CCCD/CMND của khách hàng</param>
-/// <returns>CCCD/CMND có tồn tại không</returns>
+/// <param name="CCCD">CCCD của khách hàng</param>
+/// <returns>CCCD có tồn tại không</returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD)
 {
+    if (CCCD.size() != 12) return false;
 	for (int i = 0; i < customersCount; i++)
 	{
 		if (CCCD == vCustomerIDs[i])
@@ -105,13 +106,14 @@ bool CustomersListCSV::IsIDNumberAvailable(string CCCD)
 }
 
 /// <summary>
-/// Kiểm tra xem số CCCD/CMND có tồn tại không và trả về tên khách hàng nếu tồn tại
+/// Kiểm tra xem số CCCD có tồn tại không và trả về tên khách hàng nếu tồn tại
 /// </summary>
-/// <param name="CCCD">CCCD/CMND của khách hàng</param>
-/// <param name="customerName">Tên khách hàng nếu CCCD/CMND tồn tại</param>
-/// <returns>CCCD/CMND có tồn tại không</returns>
+/// <param name="CCCD">CCCD của khách hàng</param>
+/// <param name="customerName">Tên khách hàng nếu CCCD tồn tại</param>
+/// <returns>CCCD có tồn tại không</returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName)
 {
+    if (CCCD.size() != 12) return false;
     for (int i = 0; i < customersCount; i++)
     {
         if (CCCD == vCustomerIDs[i])
@@ -124,14 +126,15 @@ bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName)
 }
 
 /// <summary>
-/// Kiểm tra xem số CCCD/CMND có tồn tại không và trả về tên khách hàng nếu tồn tại
+/// Kiểm tra xem số CCCD có tồn tại không và trả về tên khách hàng nếu tồn tại
 /// </summary>
-/// <param name="CCCD">CCCD/CMND của khách hàng</param>
-/// <param name="customerName">Tên khách hàng nếu CCCD/CMND tồn tại</param>
-/// <param name="index">index trong các vector nếu CCCD/CMND tồn tại</param>
+/// <param name="CCCD">CCCD của khách hàng</param>
+/// <param name="customerName">Tên khách hàng nếu CCCD tồn tại</param>
+/// <param name="index">index trong các vector nếu CCCD tồn tại</param>
 /// <returns></returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName, int& index)
 {
+    if (CCCD.size() != 12) return false;
     for (int i = 0; i < customersCount; i++)
     {
         if (CCCD == vCustomerIDs[i])
@@ -164,7 +167,7 @@ void CustomersListCSV::AddCustomer()
     fmt::print("Nhập địa chỉ khách hàng: ");
     vAddresses.push_back(Main::UnicodeInput());
     
-    fmt::print("Nhập số CCCD/CMND khách hàng: ");
+    fmt::print("Nhập số CCCD khách hàng: ");
     vCustomerIDs.push_back(Main::UnicodeInput());
     
     fmt::print("Nhập ghi chú: ");
@@ -179,12 +182,12 @@ void CustomersListCSV::AddCustomer()
 }
 
 /// <summary>
-/// Tìm khách hàng bằng số CCCD/CMND
+/// Tìm khách hàng bằng số CCCD
 /// </summary>
 void CustomersListCSV::FindByIDNumber()
 {
     Main::ClearScreen();
-    fmt::print("Nhập số CCCD/CMND của khách hàng: ");
+    fmt::print("Nhập số CCCD của khách hàng: ");
     string CCCD = Main::UnicodeInput();
     bool isCustomerAvail = false;
     int index = -1;
@@ -201,7 +204,7 @@ void CustomersListCSV::FindByIDNumber()
             fmt::println("Ngày sinh: " + vBirthdates[i]);
             fmt::println("SĐT: " + vPhoneNumbers[i]);
             fmt::println("Địa chỉ: " + vAddresses[i]);
-            fmt::println("Số CCCD/CMND: " + CCCD);
+            fmt::println("Số CCCD: " + CCCD);
             fmt::println("Ghi chú: {0}\n", vNotes[i]);
 
             break;
@@ -265,7 +268,7 @@ void CustomersListCSV::EditCustomerInfo(int index)
     fmt::println("[2] Ngày sinh: " + vBirthdates[index]);
     fmt::println("[3] SĐT: " + vPhoneNumbers[index]);
     fmt::println("[4] Địa chỉ: " + vAddresses[index]);
-    fmt::println("[5] Số CCCD/CMND: " + vCustomerIDs[index]);
+    fmt::println("[5] Số CCCD: " + vCustomerIDs[index]);
     fmt::println("[6] Ghi chú: {0}\n", vNotes[index]);
     fmt::println("[7] Quay lại màn hình khách hàng");
 
@@ -294,7 +297,7 @@ void CustomersListCSV::EditCustomerInfo(int index)
     }
     else if (userChoice == "5")
     {
-        fmt::print("Nhập số CMND/CCCD mới: ");
+        fmt::print("Nhập số CCCD mới: ");
         string newCCCD = Main::UnicodeInput();
         //Thay đổi CCCD trên tất cả các khoản vay hiện tại
         LoansListCSV::EditLoanCCCD(vCustomerIDs[index], newCCCD);
@@ -329,19 +332,19 @@ void CustomersListCSV::EditCustomerInfo(int index)
 void CustomersListCSV::RemoveCustomer()
 {
     Main::ClearScreen();
-    fmt::print("Nhập CCCD/CMND của khách hàng: ");
+    fmt::print("Nhập CCCD của khách hàng: ");
     string CCCD = Main::UnicodeInput();
     string customerName;
     int index = 0;
     if (!CustomersListCSV::IsIDNumberAvailable(CCCD, customerName, index))
     {
-        fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khách hàng với số CCCD/CMND trên");
+        fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khách hàng với số CCCD trên");
         fmt::println("");
         Main::PauseAndBack();
         CustomersListCSV::Interface();
     }
 
-    fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", customerName, CCCD);
+    fmt::println("Bạn có muốn xoá khách hàng {0} với số CCCD là {1}", customerName, CCCD);
     fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
     fmt::println("");
     fmt::print("Nhấn Y để xoá, N để huỷ: ");
@@ -368,7 +371,7 @@ void CustomersListCSV::RemoveCustomer()
 /// <param name="index">index của vector chứa thông tin khách hàng</param>
 void CustomersListCSV::RemoveCustomer(int index)
 {
-    fmt::println("Bạn có muốn xoá khách hàng {0} với số CMND/CCCD là {1}", vNames[index], vCustomerIDs[index]);
+    fmt::println("Bạn có muốn xoá khách hàng {0} với số CCCD là {1}", vNames[index], vCustomerIDs[index]);
     fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Mọi dữ liệu bao gồm tất cả các khoản vay của khách hàng đều sẽ bị xoá");
     fmt::println("");
     fmt::print("Nhấn Y để xoá, N để huỷ: ");
@@ -392,7 +395,7 @@ void CustomersListCSV::Interface()
 {
 	Main::ClearScreen();
 	fmt::println("[1] Thêm khách hàng");
-	fmt::println("[2] Tìm khách hàng theo số CCCD/CMND");
+	fmt::println("[2] Tìm khách hàng theo số CCCD");
 	fmt::println("[3] Xoá khách hàng");
     fmt::println("[4] Quay lại màn hình chính");
     fmt::print("Nhập lựa chọn của bạn: ");
