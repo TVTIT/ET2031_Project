@@ -52,6 +52,7 @@ private:
 	static void FindLoanByID();
 	static void ShowLoansExpired();
 	static void ShowLoansPaidOff();
+	static void ShowLoansOverDue();
 	static void CalculateTotalMoney();
 };
 

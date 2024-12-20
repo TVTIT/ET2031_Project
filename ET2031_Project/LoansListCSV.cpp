@@ -802,6 +802,76 @@ void LoansListCSV::ShowLoansPaidOff()
 }
 
 /// <summary>
+/// Liệt kê các khoản vay lâu chưa đóng tiền
+/// </summary>
+void LoansListCSV::ShowLoansOverDue()
+{
+	Main::ClearScreen();
+	fmt::println("Nhập số tháng ở dưới để liệt kê các khoản vay có lần đóng tiền gần nhất đã quá số tháng đó (tính đến ngày hôm nay)");
+	fmt::println("Phần mềm sẽ không liệt kê các khoản vay đã trả hết nợ");
+	fmt::print("Nhập số tháng: ");
+
+	int monthInput = 0;
+	try
+	{
+		monthInput = stoi(Main::UnicodeInput());
+		if (monthInput < 0)
+		{
+			throw exception();
+		}
+	}
+	catch (const std::exception&)
+	{
+		Main::DataInputInvalid();
+		LoansListCSV::Interface();
+		return;
+	}
+	fmt::println("");
+
+	bool isAvail = false;
+	for (int i = 0; i < loansCount; i++)
+	{
+		string dateCal = string();
+		if (vLoanHistory[i].empty())
+		{
+			dateCal = vDate[i];
+		}
+		else
+		{
+			vector<string> history_splited = Main::SplitString(vLoanHistory[i], '|');
+			vector<string> v_DateMoney = Main::SplitString(history_splited[history_splited.size() - 1], ';');
+			dateCal = v_DateMoney[0];
+		}
+		int monthDifference = CalculateMonthDifference(dateCal, GetCurrentDate());
+		if (monthDifference >= monthInput)
+		{
+			isAvail = true;
+			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
+			fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[i]);
+			fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[i]));
+			fmt::println("Ngày vay: {0}", vDate[i]);
+			fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[i]);
+			fmt::println("Lãi suất: {0}%", vInterestRate[i]);
+			fmt::println("Tổng lãi phát sinh: {0} đồng", PreviewMoney(vTotalAccuredInterest[i]));
+			fmt::println("Tổng tiền đã trả: {0} đồng", PreviewMoney(vTotalAmountPaid[i]));
+			fmt::println("Tổng tiền dư nợ còn lại: {0} đồng", PreviewMoney(vTotalOutstandingBalance[i]));
+			fmt::println("Ngày nộp tiền gần nhất: {0}", dateCal);
+			fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Đã quá hạn: {0} tháng", monthDifference);
+			fmt::println("\n");
+		}
+	}
+
+	if (!isAvail)
+	{
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không có khoản vay nào quá {0} tháng chưa nộp tiền", monthInput);
+		fmt::println("");
+	}
+
+	Main::PauseAndBack();
+	LoansListCSV::Interface();
+}
+
+/// <summary>
 /// Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ
 /// </summary>
 void LoansListCSV::CalculateTotalMoney()
@@ -855,8 +925,9 @@ void LoansListCSV::Interface()
 	fmt::println("[3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó");
 	fmt::println("[4] Liệt kê các khoản vay hết hạn");
 	fmt::println("[5] Liệt kê các khoản vay đã trả hết nợ");
-	fmt::println("[6] Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ,...");
-	fmt::println("[7] Quay lại màn hình chính");
+	fmt::println("[6] Liệt kê các khoản vay lâu chưa đóng tiền");
+	fmt::println("[7] Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ,...");
+	fmt::println("[8] Quay lại màn hình chính");
 
 	fmt::print("Nhập lựa chọn của bạn: ");
 
@@ -885,9 +956,13 @@ void LoansListCSV::Interface()
 	}
 	else if (userInput == "6")
 	{
-		LoansListCSV::CalculateTotalMoney();
+		LoansListCSV::ShowLoansOverDue();
 	}
 	else if (userInput == "7")
+	{
+		LoansListCSV::CalculateTotalMoney();
+	}
+	else if (userInput == "8")
 	{
 		Main::Interface();
 	}
