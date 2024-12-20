@@ -470,9 +470,11 @@ void LoansListCSV::AddLoan()
 /// <param name="CCCD"></param>
 void LoansListCSV::AddLoan(string CCCD)
 {
-	if (CustomersListCSV::IsIDNumberAvailable(CCCD))
+	string customerName = string();
+	if (CustomersListCSV::IsIDNumberAvailable(CCCD, customerName))
 	{
 		vCustomerIDs.push_back(CCCD);
+		fmt::println("Đang thêm khoản vay cho khách hàng {0}\n", customerName);
 	}
 	else
 	{
@@ -807,8 +809,8 @@ void LoansListCSV::ShowLoansPaidOff()
 void LoansListCSV::ShowLoansOverDue()
 {
 	Main::ClearScreen();
-	fmt::println("Nhập số tháng ở dưới để liệt kê các khoản vay có lần đóng tiền gần nhất đã quá số tháng đó (tính đến ngày hôm nay)");
-	fmt::println("Phần mềm sẽ không liệt kê các khoản vay đã trả hết nợ");
+	fmt::println("Nhập số tháng ở dưới để liệt kê các khoản vay có lần đóng tiền gần nhất\nđã quá số tháng đó (tính đến ngày hôm nay)");
+	fmt::println("Phần mềm sẽ không liệt kê các khoản vay đã trả hết nợ\n");
 	fmt::print("Nhập số tháng: ");
 
 	int monthInput = 0;
@@ -907,7 +909,7 @@ void LoansListCSV::CalculateTotalMoney()
 	fmt::println("Tổng lãi phát sinh dự kiến (2): {0} đồng", PreviewMoney(tongLai));
 	fmt::println("Dự kiến số tiền sau khi thu hồi nợ ((3) = (1) + (2): {0} đồng\n", PreviewMoney(tienChoVay + tongLai));
 
-	fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Lưu ý: Dữ liệu trên chỉ là dự kiến, số liệu có thể thay đổi phụ thuộc vào cách trả nợ của người vay");
+	fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Lưu ý: Dữ liệu trên chỉ là dự kiến, số liệu có thể thay đổi\nphụ thuộc vào cách trả nợ của người vay");
 	fmt::println("\n");
 
 	Main::PauseAndBack();
@@ -920,14 +922,35 @@ void LoansListCSV::CalculateTotalMoney()
 void LoansListCSV::Interface()
 {
 	Main::ClearScreen();
-	fmt::println("[1] Thêm khoản vay");
-	fmt::println("[2] Tìm kiếm khoản vay theo số CCCD/CMMD của khách hàng");
-	fmt::println("[3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó");
-	fmt::println("[4] Liệt kê các khoản vay hết hạn");
-	fmt::println("[5] Liệt kê các khoản vay đã trả hết nợ");
-	fmt::println("[6] Liệt kê các khoản vay lâu chưa đóng tiền");
-	fmt::println("[7] Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ,...");
-	fmt::println("[8] Quay lại màn hình chính");
+	//fmt::println("[1] Thêm khoản vay");
+	//fmt::println("[2] Tìm kiếm khoản vay theo số CCCD/CMMD của khách hàng");
+	//fmt::println("[3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó");
+	//fmt::println("[4] Liệt kê các khoản vay hết hạn");
+	//fmt::println("[5] Liệt kê các khoản vay đã trả hết nợ");
+	//fmt::println("[6] Liệt kê các khoản vay lâu chưa đóng tiền");
+	//fmt::println("[7] Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ,...");
+	//fmt::println("[8] Quay lại màn hình chính");
+
+
+	fmt::println("     _____________________________________________________________________________________\n");
+
+	fmt::println("       [1] Thêm khoản vay\n");
+						 
+	fmt::println("       [2] Tìm kiếm khoản vay theo số CCCD/CMMD của khách hàng\n");
+						 
+	fmt::println("       [3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó\n");
+						 
+	fmt::println("       [4] Liệt kê các khoản vay hết hạn\n");
+						 
+	fmt::println("       [5] Liệt kê các khoản vay đã trả hết nợ\n");
+						 
+	fmt::println("       [6] Liệt kê các khoản vay lâu chưa đóng tiền\n");
+						 
+	fmt::println("       [7] Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ,...\n");
+						 
+	fmt::println("       [8] Quay lại màn hình chính");
+
+	fmt::println("     _____________________________________________________________________________________\n");
 
 	fmt::print("Nhập lựa chọn của bạn: ");
 

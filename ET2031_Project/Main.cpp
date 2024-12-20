@@ -48,10 +48,19 @@ string Main::UnicodeInput()
 }
 
 /// <summary>
-/// Khởi tạo console, cho phép output có màu và đặt title
+/// Khởi tạo console: chỉnh sửa kích thước console, cho phép output có màu và đặt title
 /// </summary>
 void Main::InitializeConsole()
 {
+    //Chỉnh sửa kích thước console
+    //Source: https://cplusplus.com/forum/beginner/1481/
+    HWND console = GetConsoleWindow();
+    RECT console_rect;
+    GetWindowRect(console, &console_rect);
+    MoveWindow(console, console_rect.left, console_rect.top, 800, 600, TRUE);
+
+    //Hỗ trợ output console bằng màu
+    //Source: https://github.com/fmtlib/fmt/issues/1794#issuecomment-874161111
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode = 0;
     GetConsoleMode(hOut, &dwMode);
@@ -199,9 +208,24 @@ void Main::PauseAndExit()
 void Main::Interface()
 {
     Main::ClearScreen();
-    fmt::println("[1] Khách hàng");
-    fmt::println("[2] Khoản vay");
-    fmt::println("[3] Thoát");
+
+    fmt::println("                            _   _ _       __               ___ ______ ");
+    fmt::println("                           | \\ | | |     /_/              / _ \\____  |");
+    fmt::println("                           |  \\| | |__   ___  _ __ ___   | | | |  / / ");
+    fmt::println("                           | . ` | '_ \\ / _ \\| '_ ` _ \\  | | | | / /  ");
+    fmt::println("                           | |\\  | | | | (_) | | | | | | | |_| |/ /   ");
+    fmt::println("                           |_| \\_|_| |_|\\___/|_| |_| |_|  \\___//_/    ");
+    
+    fmt::println("                _______________________________________________________________\n");
+
+    fmt::println("                        [1] Khách hàng\n");
+
+    fmt::println("                        [2] Khoản vay\n");
+    
+    fmt::println("                        [3] Thoát");
+
+    fmt::println("                _______________________________________________________________\n");
+
     fmt::print("Nhập lựa chọn của bạn: ");
 
     string userInput;

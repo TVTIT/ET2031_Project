@@ -394,10 +394,19 @@ void CustomersListCSV::RemoveCustomer(int index)
 void CustomersListCSV::Interface()
 {
 	Main::ClearScreen();
-	fmt::println("[1] Thêm khách hàng");
-	fmt::println("[2] Tìm khách hàng theo số CCCD");
-	fmt::println("[3] Xoá khách hàng");
-    fmt::println("[4] Quay lại màn hình chính");
+
+    fmt::println("                _______________________________________________________________\n");
+
+    fmt::println("                        [1] Thêm khách hàng\n");
+
+    fmt::println("                        [2] Tìm khách hàng theo số CCCD\n");
+
+    fmt::println("                        [3] Xoá khách hàng\n");
+
+    fmt::println("                        [4] Quay lại màn hình chính");
+
+    fmt::println("                _______________________________________________________________\n");
+
     fmt::print("Nhập lựa chọn của bạn: ");
 
     string userInput;
