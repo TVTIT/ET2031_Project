@@ -20,7 +20,6 @@ private:
 	static vector<string> vPhoneNumbers;
 	static vector<string> vAddresses;
 	static vector<string> vCustomerIDs;
-	static vector<string> vCustomerGroups;
 	static vector<string> vNotes;
 
 	static int customersCount;

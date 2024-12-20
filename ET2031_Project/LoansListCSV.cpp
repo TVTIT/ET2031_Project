@@ -127,7 +127,7 @@ void LoansListCSV::CreateNewFile()
 {
 	rapidcsv::Document doc(string(), rapidcsv::LabelParams(-1, -1)); //không nhận cột, ô nào làm label
 	vector<string> v = { "Mã khoản vay","Số CCCD khách hàng","Số tiền vay","Ngày vay","Thời hạn vay","Lãi suất",
-		"Tổng lãi phát sinh","Tổng tiền đã trả","Tổng dư nợ còn lại","Ghi chú","Ngày tính lãi gần nhất" };
+		"Tổng lãi phát sinh","Tổng tiền đã trả","Tổng dư nợ còn lại","Ghi chú","Ngày tính lãi gần nhất", "Lịch sử nộp tiền"};
 	doc.InsertRow<string>(0, v);
 
 	doc.Save(LOANS_LIST_FILE);

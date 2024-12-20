@@ -23,8 +23,6 @@ vector<string> CustomersListCSV::vPhoneNumbers;
 vector<string> CustomersListCSV::vAddresses;
 //CMND/CCCD khách hàng
 vector<string> CustomersListCSV::vCustomerIDs;
-//Nhóm khách hàng
-vector<string> CustomersListCSV::vCustomerGroups;
 //Ghi chú
 vector<string> CustomersListCSV::vNotes;
 
@@ -54,8 +52,7 @@ void CustomersListCSV::Load()
     vPhoneNumbers = CSVFile.GetColumn<string>(2);
     vAddresses = CSVFile.GetColumn<string>(3);
     vCustomerIDs = CSVFile.GetColumn<string>(4);
-    vCustomerGroups = CSVFile.GetColumn<string>(5);
-    vNotes = CSVFile.GetColumn<string>(6);
+    vNotes = CSVFile.GetColumn<string>(5);
 
     customersCount = vCustomerIDs.size();
 }
@@ -66,7 +63,7 @@ void CustomersListCSV::Load()
 void CustomersListCSV::CreateNewFile()
 {
     rapidcsv::Document doc(string(), rapidcsv::LabelParams(-1, -1)); //không nhận cột, ô nào làm label
-    vector<string> v = { "Họ tên","Ngày sinh","SĐT","Địa chỉ","Số CCCD / CMND","Nhóm khách hàng","Ghi chú"};
+    vector<string> v = { "Họ tên","Ngày sinh","SĐT","Địa chỉ","Số CCCD / CMND","Ghi chú"};
     doc.InsertRow<string>(0, v);
 
     doc.Save(CUSTOMERS_LIST_FILE);
@@ -77,7 +74,7 @@ void CustomersListCSV::CreateNewFile()
 /// </summary>
 void CustomersListCSV::Save()
 {
-    for (int i = 6; i >= 0; i--)
+    for (int i = 5; i >= 0; i--)
     {
         CSVFile.RemoveColumn(i);
     }
@@ -86,8 +83,7 @@ void CustomersListCSV::Save()
     CSVFile.InsertColumn(2, vPhoneNumbers, "SĐT");
     CSVFile.InsertColumn(3, vAddresses, "Địa chỉ");
     CSVFile.InsertColumn(4, vCustomerIDs, "Số CCCD/CMND");
-    CSVFile.InsertColumn(5, vCustomerGroups, "Nhóm khách hàng");
-    CSVFile.InsertColumn(6, vNotes, "Ghi chú");
+    CSVFile.InsertColumn(5, vNotes, "Ghi chú");
 
     CSVFile.Save();
 
@@ -174,15 +170,13 @@ void CustomersListCSV::AddCustomer()
     fmt::print("Nhập số CCCD/CMND khách hàng: ");
     vCustomerIDs.push_back(Main::UnicodeInput());
     
-    fmt::print("Nhập nhóm khách hàng (1, 2, 3, 4): ");
-    vCustomerGroups.push_back(Main::UnicodeInput());
-    
     fmt::print("Nhập ghi chú: ");
     vNotes.push_back(Main::UnicodeInput());
 
     CustomersListCSV::Save();
 
-    fmt::println("Thêm khách hàng thành công");
+    fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Thêm khách hàng thành công");
+    fmt::println("");
     Main::PauseAndBack();
     CustomersListCSV::Interface();
 }
@@ -211,7 +205,6 @@ void CustomersListCSV::FindByIDNumber()
             fmt::println("SĐT: " + vPhoneNumbers[i]);
             fmt::println("Địa chỉ: " + vAddresses[i]);
             fmt::println("Số CCCD/CMND: " + CCCD);
-            fmt::println("Nhóm khách hàng: " + vCustomerGroups[i]);
             fmt::println("Ghi chú: {0}\n", vNotes[i]);
 
             break;
@@ -276,9 +269,8 @@ void CustomersListCSV::EditCustomerInfo(int index)
     fmt::println("[3] SĐT: " + vPhoneNumbers[index]);
     fmt::println("[4] Địa chỉ: " + vAddresses[index]);
     fmt::println("[5] Số CCCD/CMND: " + vCustomerIDs[index]);
-    fmt::println("[6] Nhóm khách hàng: " + vCustomerGroups[index]);
-    fmt::println("[7] Ghi chú: {0}\n", vNotes[index]);
-    fmt::println("[8] Quay lại màn hình khách hàng");
+    fmt::println("[6] Ghi chú: {0}\n", vNotes[index]);
+    fmt::println("[7] Quay lại màn hình khách hàng");
 
     fmt::print("\nNhập phần bạn muốn chỉnh sửa: ");
     string userChoice = Main::UnicodeInput();
@@ -313,15 +305,10 @@ void CustomersListCSV::EditCustomerInfo(int index)
     }
     else if (userChoice == "6")
     {
-        fmt::print("Nhập nhóm khách hàng mới: ");
-        vCustomerGroups[index] = Main::UnicodeInput();
-    }
-    else if (userChoice == "7")
-    {
         fmt::print("Nhập ghi chú mới: ");
         vNotes[index] = Main::UnicodeInput();
     }
-    else if (userChoice == "8")
+    else if (userChoice == "7")
     {
         CustomersListCSV::Interface();
         return;
