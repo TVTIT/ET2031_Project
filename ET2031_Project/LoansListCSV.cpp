@@ -744,6 +744,64 @@ void LoansListCSV::ShowLoansExpired()
 }
 
 /// <summary>
+/// Liệt kê các khoản vay đã trả hết nợ
+/// </summary>
+void LoansListCSV::ShowLoansPaidOff()
+{
+	Main::ClearScreen();
+	fmt::println("Đang tìm kiếm các khoản đã trả hết nợ...\n");
+
+	string currDate = LoansListCSV::GetCurrentDate();
+	vector<int> indexPaidOff = vector<int>();
+	for (int i = 0; i < loansCount; i++)
+	{
+		if (vTotalOutstandingBalance[i] <= 0)
+		{
+			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
+			fmt::println("Số CCCD/CMND của khách hàng: {0}", vCustomerIDs[i]);
+			fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[i]));
+			fmt::println("Ngày vay: {0}", vDate[i]);
+			fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[i]);
+			fmt::println("Lãi suất: {0}%", vInterestRate[i]);
+			fmt::println("Tổng lãi phát sinh: {0} đồng", PreviewMoney(vTotalAccuredInterest[i]));
+			fmt::println("Tổng tiền đã trả: {0} đồng", PreviewMoney(vTotalAmountPaid[i]));
+			fmt::println("Tổng tiền dư nợ còn lại: {0} đồng\n", PreviewMoney(vTotalOutstandingBalance[i]));
+			indexPaidOff.push_back(i);
+		}
+	}
+	if (indexPaidOff.size() == 0)
+	{
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Không tìm thấy khoản vay nào đã trả hết nợ");
+		fmt::println("");
+		Main::PauseAndBack();
+		LoansListCSV::Interface();
+		return;
+	}
+
+	fmt::println("Bạn có muốn xoá toàn bộ các khoản vay đã trả hết nợ không");
+	fmt::print("Nhấn Y để xoá, N để huỷ: ");
+	string userInput = Main::UnicodeInput();
+
+	if (userInput == "y" || userInput == "Y")
+	{
+		fmt::println("\nĐang xoá các khoản vay trên...");
+		int countDeleted = 0;
+		for (int i = 0; i < indexPaidOff.size(); i++)
+		{
+			CSVFile.RemoveRow(indexPaidOff[i] - countDeleted);
+			countDeleted++;
+		}
+		CSVFile.Save();
+		LoansListCSV::Load();
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Đã xoá thành công");
+		fmt::println("");
+	}
+
+	Main::PauseAndBack();
+	LoansListCSV::Interface();
+}
+
+/// <summary>
 /// Giao diện khoản vay
 /// </summary>
 void LoansListCSV::Interface()
@@ -753,7 +811,8 @@ void LoansListCSV::Interface()
 	fmt::println("[2] Tìm kiếm khoản vay theo số CCCD/CMMD của khách hàng");
 	fmt::println("[3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó");
 	fmt::println("[4] Liệt kê các khoản vay hết hạn");
-	fmt::println("[5] Quay lại màn hình chính");
+	fmt::println("[5] Liệt kê các khoản vay đã trả hết nợ");
+	fmt::println("[6] Quay lại màn hình chính");
 
 	fmt::print("Nhập lựa chọn của bạn: ");
 
@@ -777,6 +836,10 @@ void LoansListCSV::Interface()
 		LoansListCSV::ShowLoansExpired();
 	}
 	else if (userInput == "5")
+	{
+		LoansListCSV::ShowLoansPaidOff();
+	}
+	else if (userInput == "6")
 	{
 		Main::Interface();
 	}

@@ -51,5 +51,6 @@ private:
 	static void FindLoanByCCCD();
 	static void FindLoanByID();
 	static void ShowLoansExpired();
+	static void ShowLoansPaidOff();
 };
 
