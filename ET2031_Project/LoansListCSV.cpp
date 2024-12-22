@@ -1004,7 +1004,7 @@ void LoansListCSV::CalculateTotalMoney()
 				boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i]);
 				boost::multiprecision::cpp_dec_float_50 currentMoney(vTotalOutstandingBalance[i]);
 				//Tổng lãi phát sinh dự kiến = tổng lãi phát sinh của số tiền còn nợ cho đến hết hạn khoản vay
-				boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * (pow((1 + rate / 1200), monthDifference));
+				boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * (pow((1 + rate / 1200), monthDifference) - 1);
 
 				//Tổng lãi = tổng lãi phát sinh đã tính toán + Tổng lãi phát sinh dự kiến
 				tongLai += vTotalAccuredInterest[i] + boost::multiprecision::round(futureMoney).convert_to<long long>();
