@@ -90,7 +90,7 @@ Các lựa chọn trong giao diện này bao gồm:
    ![Ảnh thêm khoản vay](/img/Thêm%20khoản%20vay.png)
 2. **Tìm khoản vay theo số CCCD**.  
    ![Ảnh tìm khoản vay theo số CCCD](/img/Tìm%20kiểm%20khoản%20vay%20theo%20CCCD.png)
-3. **Tìm khoản vay theo mã khoản vay** và thao tác với khoản vay (sửa, xóa, liệt kê lịch sử nộp tiền).  
+3. **Tìm khoản vay theo mã khoản vay** và thao tác với khoản vay (sửa, xóa, liệt kê lịch sử nộp tiền, tính số tiền cố định mỗi tháng phải trả).  
    ![Ảnh tìm khoản vay theo mã khoản vay](/img/TÌm%20kiếm%20khoản%20vay%20theo%20mã%20khoản%20vay.png)
 4. **Liệt kê khoản vay hết hạn** và tùy chọn xóa tất cả các khoản vay đó.
 5. **Liệt kê khoản vay đã trả hết nợ** và tùy chọn xóa tất cả các khoản vay đó.
