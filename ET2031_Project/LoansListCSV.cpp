@@ -344,9 +344,6 @@ void LoansListCSV::EditLoan(int index)
 			fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Cập nhật thời hạn vay thành công");
 			fmt::println("");
 			LoansListCSV::Save();
-			Main::PauseAndBack();
-			LoansListCSV::Interface();
-			return;
 		}
 		catch (const std::exception&)
 		{
@@ -370,9 +367,6 @@ void LoansListCSV::EditLoan(int index)
 			fmt::println("");
 			fmt::println("Tổng tiền đã trả hiện tại: {0} đồng", LoansListCSV::PreviewMoney(vTotalAmountPaid[index]));
 			LoansListCSV::Save();
-			Main::PauseAndBack();
-			LoansListCSV::Interface();
-			return;
 		}
 		catch (const std::exception&)
 		{
@@ -390,16 +384,19 @@ void LoansListCSV::EditLoan(int index)
 		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Cập nhật ghi chú thành công");
 		fmt::println("");
 		LoansListCSV::Save();
-		Main::PauseAndBack();
+	}
+	else if (userInput == "4")
+	{
 		LoansListCSV::Interface();
 		return;
 	}
 	else
 	{
-		Main::PauseAndBack();
-		LoansListCSV::Interface();
-		return;
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "Lựa chọn không hợp lệ!");
+		fmt::println("");
 	}
+	Main::PauseAndBack();
+	LoansListCSV::Interface();
 }
 
 /// <summary>
@@ -448,7 +445,9 @@ void LoansListCSV::ShowLoanHistory(int index)
 		fmt::println("Số tiền nộp thêm: {0}\n", LoansListCSV::PreviewMoney(stoll(vDate_Money[1])));
 	}
 	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::gray), "Hết lịch sử giao dịch");
-	fmt::println("");
+	fmt::println("\n");
+	Main::PauseAndBack();
+	LoansListCSV::Interface();
 }
 
 /// <summary>
@@ -799,9 +798,17 @@ void LoansListCSV::FindLoanByID()
 	{
 		LoansListCSV::CalculateMonthlyAmount(index);
 	}
-
-	Main::PauseAndBack();
-	LoansListCSV::Interface();
+	else if (userInput == "5")
+	{
+		LoansListCSV::Interface();
+	}
+	else
+	{
+		fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "Lựa chọn không hợp lệ!");
+		fmt::println("");
+		Main::PauseAndBack();
+		LoansListCSV::Interface();
+	}
 }
 
 /// <summary>
