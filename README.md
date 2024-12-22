@@ -34,6 +34,7 @@ Mục tiêu của ứng dụng là:
     - Thêm mới, sửa đổi, và xóa thông tin người vay.
 - Quản lý khoản vay:
     - Thông tin khoản vay bao gồm: mã khoản vay, số tiền vay, lãi suất, thời hạn.
+    - Hỗ trợ tính toán số tiền phải trả hàng tháng, tổng số tiền phải trả và lãi suất tích lũy.
     - Cập nhật trạng thái khoản vay.
 - Báo cáo và thống kê:
     - Hiển thị danh sách khoản vay (đang vay, đã trả, quá hạn).
