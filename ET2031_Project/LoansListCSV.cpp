@@ -452,6 +452,116 @@ void LoansListCSV::ShowLoanHistory(int index)
 }
 
 /// <summary>
+/// Tính toán số tiền cố định phải trả từng tháng để kịp trả hết nợ đúng hạn
+/// </summary>
+/// <param name="index">index của vector chứa thông tin khoản vay</param>
+void LoansListCSV::CalculateMonthlyAmount(int index)
+{
+	fmt::println("");
+	//Khoản vay đã trả hết nợ
+	if (vTotalOutstandingBalance[index] <= 0)
+	{
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Khoản vay này đã trả hết nợ");
+		fmt::println("\n");
+		Main::PauseAndBack();
+		LoansListCSV::Interface();
+		return;
+	}
+
+	int monthLeft = vLoanTerm[index] - CalculateMonthDifference(vDate[index], GetCurrentDate());
+
+	//Nếu khoản vay hết hạn
+	if (monthLeft < 1)
+	{
+		fmt::print(fmt::fg(fmt::color::black) | fmt::bg(fmt::color::yellow), "Khoản vay này đã hết hạn");
+		fmt::println("\n");
+		fmt::print("Nhập số tháng để trả hết nợ cho khoản vay này: ");
+		try
+		{
+			monthLeft = stoi(Main::UnicodeInput());
+			if (monthLeft < 1)
+			{
+				throw exception();
+			}
+		}
+		catch (const std::exception&)
+		{
+			Main::DataInputInvalid();
+			LoansListCSV::Interface();
+			return;
+		}
+		fmt::println("");
+	}
+
+	boost::multiprecision::cpp_dec_float_50 totalOutstandingBalance(vTotalOutstandingBalance[index]);
+	boost::multiprecision::cpp_dec_float_50 interestRate(vInterestRate[index]);
+	boost::multiprecision::cpp_dec_float_50 moneyMonthly = (totalOutstandingBalance * (interestRate / 1200)) / (1 - pow((1 + interestRate / 1200), -monthLeft));
+	long long ll_moneyMonthly = boost::multiprecision::round(moneyMonthly).convert_to<long long>();
+
+	fmt::println("Số tiền vay: {0} đồng", PreviewMoney(vLoanAmount[index]));
+	fmt::println("Ngày vay: {0}", vDate[index]);
+	fmt::println("Thời hạn vay: {0} tháng", vLoanTerm[index]);
+	fmt::println("Phải trả hết nợ trong {0} tháng", monthLeft);
+	fmt::println("Tổng lãi phát sinh (hiện tại): {0} đồng", PreviewMoney(vTotalAccuredInterest[index]));
+	fmt::println("Tổng dư nợ còn lại: {0} đồng\n", PreviewMoney(vTotalOutstandingBalance[index]));
+
+	fmt::print("Để trả hết số nợ còn lại trong ");
+	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::gray), "{0} tháng", monthLeft);
+	fmt::print(", bạn phải trả ");
+	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::gray), "{0} đồng", PreviewMoney(ll_moneyMonthly));
+	fmt::println(" mỗi tháng\n");
+
+	fmt::println("Số tiền vay (1): {0} đồng", PreviewMoney(vLoanAmount[index]));
+	fmt::println("Tổng số tiền đã trả (hiện tại) (2): {0} đồng", PreviewMoney(vTotalAmountPaid[index]));
+	fmt::println("Tổng số tiền sẽ trả sau {0} tháng (3): {1} * {0} = {2} đồng", monthLeft, PreviewMoney(ll_moneyMonthly), PreviewMoney(ll_moneyMonthly * monthLeft));
+	fmt::println("Tổng số tiền sẽ trả sau khi hết nợ ((4) = (2) + (3): {0} đồng", PreviewMoney(vTotalAmountPaid[index] + ll_moneyMonthly * monthLeft));
+	fmt::println("Tổng lãi phát sinh sau khi trả hết nợ ((5) = (4) - (1): {0} đồng\n", PreviewMoney(vTotalAmountPaid[index] + ll_moneyMonthly * monthLeft - vLoanAmount[index]));
+
+	Main::PauseAndBack();
+	LoansListCSV::Interface();
+}
+
+/// <summary>
+/// Tính số tiền phải trả cố định hàng tháng cho khoản vay mới nhất
+/// </summary>
+void LoansListCSV::CalculateMonthlyAmount()
+{
+	int index = loansCount - 1;
+	int monthLeft = vLoanTerm[index];
+
+	boost::multiprecision::cpp_dec_float_50 totalOutstandingBalance(vTotalOutstandingBalance[index]);
+	boost::multiprecision::cpp_dec_float_50 interestRate(vInterestRate[index]);
+	boost::multiprecision::cpp_dec_float_50 moneyMonthly = (totalOutstandingBalance * (interestRate / 1200)) / (1 - pow((1 + interestRate / 1200), -monthLeft));
+	long long ll_moneyMonthly = boost::multiprecision::round(moneyMonthly).convert_to<long long>();
+
+	fmt::print("Để trả hết số tiền vay trong ");
+	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::gray), "{0} tháng", monthLeft);
+	fmt::print(", bạn phải trả ");
+	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::gray), "{0} đồng", PreviewMoney(ll_moneyMonthly));
+	fmt::println(" mỗi tháng\n");
+
+	fmt::println("Số tiền vay (1): {0} đồng", PreviewMoney(vLoanAmount[index]));
+	fmt::println("Tổng số tiền sẽ trả sau khi hết nợ (2): {1} * {0} = {2} đồng", monthLeft, PreviewMoney(ll_moneyMonthly), PreviewMoney(ll_moneyMonthly * monthLeft));
+	fmt::println("Tổng lãi phát sinh sau khi trả hết nợ ((3) = (2) - (1): {0} đồng\n", PreviewMoney(vTotalAmountPaid[index] + ll_moneyMonthly * monthLeft - vLoanAmount[index]));
+}
+
+/// <summary>
+/// Tính ngày đóng tiền gần nhất của khoản vay
+/// </summary>
+/// <param name="index">index của vector chứa thông tin khoản vay</param>
+/// <returns></returns>
+string LoansListCSV::CalculateMostRecentPay(int index)
+{
+	if (vLoanHistory[index].empty())
+	{
+		return vDate[index];
+	}
+	vector<string> history_splited = Main::SplitString(vLoanHistory[index], '|');
+	vector<string> v_DateMoney = Main::SplitString(history_splited[history_splited.size() - 1], ';');
+	return v_DateMoney[0];
+}
+
+/// <summary>
 /// Thêm khoản vay (gọi từ LoansListCSV::Interface())
 /// </summary>
 void LoansListCSV::AddLoan()
@@ -555,6 +665,8 @@ void LoansListCSV::AddLoan(string CCCD)
 
 	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Khoản vay đã được tạo thành công với mã khoản vay: {0}", ID);
 	fmt::println("\n");
+
+	LoansListCSV::CalculateMonthlyAmount();
 
 	Main::PauseAndBack();
 	LoansListCSV::Interface();
@@ -666,7 +778,8 @@ void LoansListCSV::FindLoanByID()
 	fmt::println("[1] Sửa khoản vay");
 	fmt::println("[2] Xoá khoản vay");
 	fmt::println("[3] Liệt kê lịch sử nộp tiền của khoản vay");
-	fmt::println("[4] Quay lại màn hình khoản vay");
+	fmt::println("[4] Tính toán số tiền cố định phải trả hàng tháng");
+	fmt::println("[5] Quay lại màn hình khoản vay");
 	fmt::print("Nhập lựa chọn của bạn: ");
 
 	string userInput = Main::UnicodeInput();
@@ -681,6 +794,10 @@ void LoansListCSV::FindLoanByID()
 	else if (userInput == "3")
 	{
 		LoansListCSV::ShowLoanHistory(index);
+	}
+	else if (userInput == "4")
+	{
+		LoansListCSV::CalculateMonthlyAmount(index);
 	}
 
 	Main::PauseAndBack();
@@ -834,17 +951,7 @@ void LoansListCSV::ShowLoansOverDue()
 	bool isAvail = false;
 	for (int i = 0; i < loansCount; i++)
 	{
-		string dateCal = string();
-		if (vLoanHistory[i].empty())
-		{
-			dateCal = vDate[i];
-		}
-		else
-		{
-			vector<string> history_splited = Main::SplitString(vLoanHistory[i], '|');
-			vector<string> v_DateMoney = Main::SplitString(history_splited[history_splited.size() - 1], ';');
-			dateCal = v_DateMoney[0];
-		}
+		string dateCal = LoansListCSV::CalculateMostRecentPay(i);
 		int monthDifference = CalculateMonthDifference(dateCal, GetCurrentDate());
 		if (monthDifference >= monthInput)
 		{

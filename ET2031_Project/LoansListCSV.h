@@ -46,6 +46,9 @@ private:
 	static void EditLoan(int index);
 	static void RemoveLoan(int index);
 	static void ShowLoanHistory(int index);
+	static void CalculateMonthlyAmount(int index);
+	static void CalculateMonthlyAmount();
+	static string CalculateMostRecentPay(int index);
 
 	static void AddLoan();
 	static void FindLoanByCCCD();
