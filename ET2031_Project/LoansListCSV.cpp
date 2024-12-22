@@ -550,6 +550,7 @@ void LoansListCSV::AddLoan(string CCCD)
 	vTotalAmountPaid.push_back(0);
 	vTotalOutstandingBalance.push_back(vLoanAmount[loansCount]);
 	vLastCalDate.push_back(date);
+	vLoanHistory.push_back("");
 	LoansListCSV::Save();
 
 	fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::green), "Khoản vay đã được tạo thành công với mã khoản vay: {0}", ID);
