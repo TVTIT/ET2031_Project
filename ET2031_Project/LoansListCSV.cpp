@@ -274,11 +274,11 @@ void LoansListCSV::CalculateInterestAllRow()
 		if (monthDifferenceLastCal < 1) continue;
 
 		//Sử dụng cpp_dec_float_50 trong thư viện boost/multiprecision để tính toán chính xác
-		boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i] / 1200);
+		boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i]);
 		boost::multiprecision::cpp_dec_float_50 currentMoney(vTotalOutstandingBalance[i]);
-		boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * pow((1 + rate), monthDifferenceLastCal);
+		boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * pow((1 + rate / 1200), monthDifferenceLastCal);
 
-		long long ll_futureMoney = futureMoney.convert_to<long long>();
+		long long ll_futureMoney = boost::multiprecision::round(futureMoney).convert_to<long long>();
 		vTotalAccuredInterest[i] += ll_futureMoney - vTotalOutstandingBalance[i];
 		vTotalOutstandingBalance[i] = ll_futureMoney;
 		vLastCalDate[i] = LoansListCSV::GetCurrentDate();
@@ -1001,13 +1001,13 @@ void LoansListCSV::CalculateTotalMoney()
 			int monthDifference = vLoanTerm[i] - LoansListCSV::CalculateMonthDifference(vDate[i], vLastCalDate[i]);
 			if (monthDifference > 0)
 			{
-				boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i] / 1200);
+				boost::multiprecision::cpp_dec_float_50 rate(vInterestRate[i]);
 				boost::multiprecision::cpp_dec_float_50 currentMoney(vTotalOutstandingBalance[i]);
 				//Tổng lãi phát sinh dự kiến = tổng lãi phát sinh của số tiền còn nợ cho đến hết hạn khoản vay
-				boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * pow((1 + rate), monthDifference);
+				boost::multiprecision::cpp_dec_float_50 futureMoney = currentMoney * (pow((1 + rate / 1200), monthDifference));
 
 				//Tổng lãi = tổng lãi phát sinh đã tính toán + Tổng lãi phát sinh dự kiến
-				tongLai += vTotalAccuredInterest[i] + futureMoney.convert_to<long long>();
+				tongLai += vTotalAccuredInterest[i] + boost::multiprecision::round(futureMoney).convert_to<long long>();
 			}
 		}
 	}
