@@ -63,6 +63,7 @@ Phần mềm không yêu cầu cài đặt. Bạn chỉ cần:
 
 ### Giao diện chính
 ![Ảnh giao diện chính](/img/Giao%20diện%20chính.png)
+
 Khởi động phần mềm. Giao diện chính sẽ có các lựa chọn sau:
 - **1**: Khách hàng
 - **2**: Khoản vay
