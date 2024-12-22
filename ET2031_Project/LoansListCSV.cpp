@@ -935,7 +935,8 @@ void LoansListCSV::ShowLoansOverDue()
 {
 	Main::ClearScreen();
 	fmt::println("Nhập số tháng ở dưới để liệt kê các khoản vay có lần đóng tiền gần nhất\nđã quá số tháng đó (tính đến ngày hôm nay)");
-	fmt::println("Phần mềm sẽ không liệt kê các khoản vay đã trả hết nợ\n");
+	fmt::println("Phần mềm sẽ không liệt kê các khoản vay đã trả hết nợ");
+	fmt::println("Nhập 0 để liệt kê tất cả khoản vay chưa trả hết nợ");
 	fmt::print("Nhập số tháng: ");
 
 	int monthInput = 0;
@@ -960,7 +961,7 @@ void LoansListCSV::ShowLoansOverDue()
 	{
 		string dateCal = LoansListCSV::CalculateMostRecentPay(i);
 		int monthDifference = CalculateMonthDifference(dateCal, GetCurrentDate());
-		if (monthDifference >= monthInput)
+		if (monthDifference >= monthInput && vTotalOutstandingBalance[i] > 0)
 		{
 			isAvail = true;
 			fmt::println("Mã khoản vay: {0}", vLoanIDs[i]);
