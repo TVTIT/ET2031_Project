@@ -12,7 +12,6 @@
 #include "CustomersListCSV.h"
 #include "LoansListCSV.h"
 
-#define VERSION_LABEL L"v0.2.2-beta"
 
 using namespace std;
 
