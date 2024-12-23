@@ -87,6 +87,23 @@ void CustomersListCSV::Save()
     CustomersListCSV::Load();
 }
 
+bool CustomersListCSV::ValidateCCCD(string CCCD)
+{
+    if (CCCD.size() != 12) return false;
+    try
+    {
+        //Convert sang long long để xem có phải số không
+        if (stoll(CCCD) < 0)
+            throw exception();
+    }
+    catch (const std::exception&)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 /// <summary>
 /// Kiểm tra xem số CCCD có tồn tại không
 /// </summary>
@@ -94,7 +111,7 @@ void CustomersListCSV::Save()
 /// <returns>CCCD có tồn tại không</returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD)
 {
-    if (CCCD.size() != 12) return false;
+    if (!ValidateCCCD(CCCD)) return false;
 	for (int i = 0; i < customersCount; i++)
 	{
 		if (CCCD == vCustomerIDs[i])
@@ -113,7 +130,7 @@ bool CustomersListCSV::IsIDNumberAvailable(string CCCD)
 /// <returns>CCCD có tồn tại không</returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName)
 {
-    if (CCCD.size() != 12) return false;
+    if (!ValidateCCCD(CCCD)) return false;
     for (int i = 0; i < customersCount; i++)
     {
         if (CCCD == vCustomerIDs[i])
@@ -134,7 +151,7 @@ bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName)
 /// <returns></returns>
 bool CustomersListCSV::IsIDNumberAvailable(string CCCD, string& customerName, int& index)
 {
-    if (CCCD.size() != 12) return false;
+    if (!ValidateCCCD(CCCD)) return false;
     for (int i = 0; i < customersCount; i++)
     {
         if (CCCD == vCustomerIDs[i])
@@ -155,6 +172,24 @@ void CustomersListCSV::AddCustomer()
     Main::ClearScreen();
 
     //string userInput;
+    fmt::print("Nhập số CCCD khách hàng: ");
+    string CCCD = Main::UnicodeInput();
+    if (!ValidateCCCD(CCCD))
+    {
+        Main::DataInputInvalid();
+        CustomersListCSV::Interface();
+        return;
+    }
+    string customerName;
+    if (IsIDNumberAvailable(CCCD, customerName))
+    {
+        fmt::print(fmt::fg(fmt::color::white) | fmt::bg(fmt::color::red), "CCCD trùng với khách hàng {0}", customerName);
+        fmt::println("");
+        Main::PauseAndBack();
+        CustomersListCSV::Interface();
+        return;
+    }
+
     fmt::print("Nhập tên khách hàng: ");
     vNames.push_back(Main::UnicodeInput());
 
@@ -166,10 +201,7 @@ void CustomersListCSV::AddCustomer()
     
     fmt::print("Nhập địa chỉ khách hàng: ");
     vAddresses.push_back(Main::UnicodeInput());
-    
-    fmt::print("Nhập số CCCD khách hàng: ");
-    vCustomerIDs.push_back(Main::UnicodeInput());
-    
+        
     fmt::print("Nhập ghi chú: ");
     vNotes.push_back(Main::UnicodeInput());
 

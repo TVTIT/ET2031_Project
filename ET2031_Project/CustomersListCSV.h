@@ -29,6 +29,7 @@ private:
 	static void EditCustomerInfo(int index);
 
 	static void Save();
+	static bool ValidateCCCD(string CCCD);
 	static void AddCustomer();
 	static void FindByIDNumber();
 	static void RemoveCustomer();
