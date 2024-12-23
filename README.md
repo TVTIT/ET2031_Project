@@ -99,12 +99,23 @@ Các lựa chọn trong giao diện này bao gồm:
 7. **Thống kê tổng quan**: Tính toán tổng số tiền cho vay, lãi phát sinh, và số tiền thu hồi dự kiến.
 8. **Quay lại màn hình chính**.
 
+---
+
+## Cấu trúc thư mục repo
+- `src\`: Mã nguồn (code) của phần mềm.    
+    *Khuyến nghị mở bằng `Visual Studio 2022` hoặc phiên bản cao hơn.*  
+- `img\`: Hình ảnh của phần mềm
+
+---
+
 ## Thư viện sử dụng trong dự án
 - [boost](https://www.boost.org/)
 - [fmt](https://fmt.dev/)
 - [rapidcsv](https://github.com/d99kris/rapidcsv)
 
 Cảm ơn những tác giả, người đóng góp cho 3 thư viện trên đã giúp chúng tôi hoàn thành bài tập lớn này
+
+---
 
 ## Về chúng tôi
 Dự án này được thiết kế và xây dựng bởi nhóm 7, lớp 156396 môn Kỹ thuật lập trình C/C++ (ET2031) của Trường Điện - Điện tử, Đại học Bách khoa Hà Nội học kì 2024.1. Nhóm chúng tôi bao gồm:
