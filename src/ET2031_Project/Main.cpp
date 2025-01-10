@@ -34,12 +34,14 @@ void Main::GetPath()
 /// <returns></returns>
 string Main::UnicodeInput()
 {
+    //Hàm _setmode: https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/setmode?view=msvc-170
+    //Chỉnh chế độ UTF-16 để hỗ trợ tiếng Việt có dấu, sau đó đặt lại chế độ ban đầu để tránh xung đột
     _setmode(_fileno(stdin), _O_U16TEXT);
     wstring w_userInput;
     getline(wcin, w_userInput);
     _setmode(_fileno(stdin), _O_TEXT);
 
-    //Convert wstring sang string
+    //Convert wstring sang string (Source: ChatGPT)
     int size_needed = WideCharToMultiByte(CP_UTF8, 0, w_userInput.c_str(), -1, nullptr, 0, nullptr, nullptr);
     string s_userInput(size_needed - 1, 0);  // Trừ đi 1 để bỏ ký tự \0
     WideCharToMultiByte(CP_UTF8, 0, w_userInput.c_str(), -1, &s_userInput[0], size_needed, nullptr, nullptr);
@@ -66,6 +68,7 @@ void Main::InitializeConsole()
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(hOut, dwMode);
 
+    //Đặt tiêu đề cho console
     wstring consoleTitle = L"Phần mềm Quản lý hệ thống vay nợ ";
     consoleTitle.append(VERSION_LABEL);
 
@@ -115,6 +118,7 @@ void Main::ClearScreen()
 
 /// <summary>
 /// Chia string thành các vector<string> bằng 1 ký tự phân tách
+/// Source: https://stackoverflow.com/a/10058725
 /// </summary>
 /// <param name="input">string cần chia</param>
 /// <param name="pattern">Ký tự phân tách</param>

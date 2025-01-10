@@ -51,6 +51,7 @@ int LoansListCSV::loansCount = 0;
 
 /// <summary>
 /// Tạo 1 ID ngẫu nhiên cho khoản vay với 6 ký tự bao gồm chữ viết hoa và số
+/// Source: ChatGPT
 /// </summary>
 /// <returns></returns>
 string LoansListCSV::GenerateID()
@@ -175,6 +176,7 @@ string LoansListCSV::GetCurrentDate()
 
 /// <summary>
 /// Tính toán khoảng cách tháng giữa 2 ngày
+/// Source: ChatGPT
 /// </summary>
 /// <param name="date1"></param>
 /// <param name="date2"></param>
@@ -1038,15 +1040,6 @@ void LoansListCSV::CalculateTotalMoney()
 void LoansListCSV::Interface()
 {
 	Main::ClearScreen();
-	//fmt::println("[1] Thêm khoản vay");
-	//fmt::println("[2] Tìm kiếm khoản vay theo số CCCD/CMMD của khách hàng");
-	//fmt::println("[3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó");
-	//fmt::println("[4] Liệt kê các khoản vay hết hạn");
-	//fmt::println("[5] Liệt kê các khoản vay đã trả hết nợ");
-	//fmt::println("[6] Liệt kê các khoản vay lâu chưa đóng tiền");
-	//fmt::println("[7] Tính toán tổng số tiền cho vay, lãi phát sinh, dự kiến số tiền thu hồi nợ,...");
-	//fmt::println("[8] Quay lại màn hình chính");
-
 
 	fmt::println("     _____________________________________________________________________________________\n");
 
