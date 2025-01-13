@@ -221,6 +221,13 @@
     <ClInclude Include="LoansListCSV.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="rapidcsv.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ET2031_Project.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon_app.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

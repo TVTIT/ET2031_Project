@@ -1,4 +1,8 @@
 # Phần mềm Quản lý hệ thống vay nợ
+<div style="text-align: center;">
+    <img src="img/big_icon_app.jpg" alt="Description" width="128" height="121">
+</div>
+
 Đây là bài tập lớn học phần ET2031 - Kỹ thuật lập trình C/C++ của nhóm 3, lớp 156396, học kì 2024.1
 
 ---
