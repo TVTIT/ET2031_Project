@@ -1,5 +1,5 @@
 ﻿#pragma once
-#define VERSION_LABEL L"v0.2.3-beta"
+#define VERSION_LABEL L"v1.0.0-release"
 using namespace std;
 class Main
 {

@@ -19,6 +19,7 @@ string Main::DirectoryPath;
 
 /// <summary>
 /// Lấy đường dẫn của file .exe và lưu vào string Main::DirectoryPath
+/// Source: ChatGPT
 /// </summary>
 void Main::GetPath()
 {
