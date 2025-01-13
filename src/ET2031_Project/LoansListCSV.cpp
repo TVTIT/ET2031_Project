@@ -1045,7 +1045,7 @@ void LoansListCSV::Interface()
 
 	fmt::println("       [1] Thêm khoản vay\n");
 						 
-	fmt::println("       [2] Tìm kiếm khoản vay theo số CCCD/CMMD của khách hàng\n");
+	fmt::println("       [2] Tìm kiếm khoản vay theo số CCCD của khách hàng\n");
 						 
 	fmt::println("       [3] Tìm kiếm khoản vay theo mã khoản vay và thao tác trên khoản vay đó\n");
 						 
