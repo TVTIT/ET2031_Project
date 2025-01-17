@@ -98,16 +98,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\boost_1_86_0;$(IncludePath)</IncludePath>
+    <IncludePath>E:\boost_1_86_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>D:\boost_1_86_0;$(IncludePath)</IncludePath>
+    <IncludePath>E:\boost_1_86_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\boost_1_86_0;$(IncludePath)</IncludePath>
+    <IncludePath>E:\boost_1_86_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>D:\boost_1_86_0;$(IncludePath)</IncludePath>
+    <IncludePath>E:\boost_1_86_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

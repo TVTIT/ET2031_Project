@@ -190,6 +190,8 @@ void CustomersListCSV::AddCustomer()
         return;
     }
 
+    vCustomerIDs.push_back(CCCD);
+
     fmt::print("Nhập tên khách hàng: ");
     vNames.push_back(Main::UnicodeInput());
 
