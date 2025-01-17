@@ -92,9 +92,11 @@ bool CustomersListCSV::ValidateCCCD(string CCCD)
     if (CCCD.size() != 12) return false;
     try
     {
-        //Convert sang long long để xem có phải số không
-        if (stoll(CCCD) < 0)
-            throw exception();
+        for (int i = 0; i < CCCD.size(); i++)
+        {
+            if (!isdigit(CCCD[i]))
+                throw exception();
+        }
     }
     catch (const std::exception&)
     {
